@@ -20,6 +20,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.ssl.note</groupId>
+            <artifactId>internal-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
             <version>${spring.cloud.alibaba.version}</version>
