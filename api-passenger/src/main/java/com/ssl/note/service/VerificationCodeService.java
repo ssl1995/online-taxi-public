@@ -1,7 +1,7 @@
 package com.ssl.note.service;
 
-import com.ssl.note.response.NumberCodeResponse;
-import net.sf.json.JSONObject;
+import com.ssl.note.dto.ResponseResult;
+import com.ssl.note.response.TokenResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,12 +12,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class VerificationCodeService {
 
-    public String getVerificationCode(String passengerPhone) {
+    public ResponseResult<String> getVerificationCode(String passengerPhone) {
+        return ResponseResult.success(passengerPhone);
+    }
 
-        JSONObject result = new JSONObject();
-        result.put("code", 1);
-        result.put("message", "success");
+    public ResponseResult<TokenResponse> checkCode(String passengerPhone, String numberCode) {
 
-        return result.toString();
+
+        TokenResponse token = new TokenResponse();
+        token.setToken("abcdef");
+        return ResponseResult.success(token);
     }
 }

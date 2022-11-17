@@ -8,6 +8,17 @@ spring:
     nacos:
       discovery:
         server-addr: http://101.201.154.144:8848
+  redis:
+      host: 101.201.154.144
+      port: 6379
+      password: Ssl@134679
+      database: 0
+      jedis:
+        pool:
+          max-active: 5
+          max-idle: 5
+          min-idle: 0
+          max-wait: 1000
 
 management:
   endpoint:

@@ -19,6 +19,12 @@ public class ResponseResult<T> {
     private String message;
     private T data;
 
+    public static <T> ResponseResult<T> success() {
+        return new ResponseResult<T>()
+                .setCode(CommonStatusEnum.SUCCESS.getCode())
+                .setMessage(CommonStatusEnum.SUCCESS.getMessage());
+    }
+
     public static <T> ResponseResult<T> success(T data) {
         return new ResponseResult<T>()
                 .setCode(CommonStatusEnum.SUCCESS.getCode())
@@ -26,7 +32,7 @@ public class ResponseResult<T> {
                 .setData(data);
     }
 
-    public static <T> ResponseResult<T> fail( T data) {
+    public static <T> ResponseResult<T> fail(T data) {
         return new ResponseResult<T>()
                 .setCode(CommonStatusEnum.FAIL.getCode())
                 .setMessage(CommonStatusEnum.FAIL.getMessage())
