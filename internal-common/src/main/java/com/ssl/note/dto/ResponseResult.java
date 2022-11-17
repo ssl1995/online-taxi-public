@@ -39,6 +39,12 @@ public class ResponseResult<T> {
                 .setData(data);
     }
 
+    public static <T> ResponseResult<T> fail(Integer code, String message) {
+        return new ResponseResult<T>()
+                .setCode(code)
+                .setMessage(message);
+    }
+
     public static <T> ResponseResult<T> fail(Integer code, String message, T data) {
         return new ResponseResult<T>()
                 .setCode(code)

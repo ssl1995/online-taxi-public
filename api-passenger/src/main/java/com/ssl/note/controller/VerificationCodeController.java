@@ -26,15 +26,6 @@ public class VerificationCodeController {
     @Autowired
     private VerificationCodeService verificationCodeService;
 
-    @Autowired
-    private VerificationCodeClient verificationCodeClient;
-
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
-    public static final String VERIFICATION_CODE_PREFIX = "passenger-verification-code-";
-    public static final Integer NUMBER_SIZE = 6;
-
     /**
      * 获取随机6位的验证码
      */
@@ -42,19 +33,9 @@ public class VerificationCodeController {
     public ResponseResult<String> getVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO) {
         String passengerPhone = verificationCodeDTO.getPassengerPhone();
 
-        // 获取6位随机验证码
-        ResponseResult<NumberCodeResponse> numberCodeResponse = verificationCodeClient.getNumberCode(NUMBER_SIZE);
-        // 存入redis
-        String numberCodeValue = numberCodeResponse.getData().getNumberCode() + "";
-        String key = VERIFICATION_CODE_PREFIX + numberCodeValue;
-        stringRedisTemplate.opsForValue().set(key, numberCodeValue, 2L, TimeUnit.MINUTES);
-
-        // todo 通过短信服务商，将对应的验证码发送到手机上，阿里云短信服务、腾讯短信通、华信等
-
-        System.out.println("api服务收到: " + numberCodeValue);
-
-        return verificationCodeService.getVerificationCode(passengerPhone);
+        return verificationCodeService.generatorCode(passengerPhone);
     }
+
 
 
     /**
