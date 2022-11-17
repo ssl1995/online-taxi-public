@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 public class VerificationCodeService {
 
     public String getVerificationCode(String passengerPhone) {
-        System.out.println("1");
-
 
         JSONObject result = new JSONObject();
         result.put("code", 1);

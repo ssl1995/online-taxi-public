@@ -16,11 +16,11 @@ public class NumberCodeController {
 
     @GetMapping("/numberCode/{size}")
     public ResponseResult<NumberCodeResponse> getNumberCode(@PathVariable("size") Integer size) {
-        System.out.println("size:" + size);
 
         NumberCodeResponse data = new NumberCodeResponse();
         data.setNumberCode(getRandomSixNum(size));
 
+        System.out.println("获取验证码服务生成:" + data.getNumberCode());
         return ResponseResult.success(data);
     }
 
