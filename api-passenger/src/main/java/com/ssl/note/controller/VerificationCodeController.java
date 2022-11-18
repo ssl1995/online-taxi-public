@@ -1,19 +1,14 @@
 package com.ssl.note.controller;
 
 import com.ssl.note.dto.ResponseResult;
-import com.ssl.note.remote.VerificationCodeClient;
 import com.ssl.note.request.VerificationCodeDTO;
-import com.ssl.note.response.NumberCodeResponse;
 import com.ssl.note.response.TokenResponse;
 import com.ssl.note.service.VerificationCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author SongShengLin

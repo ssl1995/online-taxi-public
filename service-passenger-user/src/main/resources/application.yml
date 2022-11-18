@@ -6,3 +6,13 @@ spring:
     active: default
   application:
     name: service-passenger-user
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://rm-2zep5730lmk5s5dy37o.mysql.rds.aliyuncs.com:3306/service-passenger-user?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    password: Ssl@199502
+    username: root
+
+# mybatis-plus打印sql日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
