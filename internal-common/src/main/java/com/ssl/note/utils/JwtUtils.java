@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ssl.note.dto.TokenResult;
+import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -61,6 +62,12 @@ public class JwtUtils {
         String phone = decodedJWT.getClaim(JWT_KEY_PHONE).toString();
         String identity = decodedJWT.getClaim(JWT_KEY_IDENTITY).toString();
         return TokenResult.builder().phone(phone).identity(identity).build();
+    }
+
+    public static void main(String[] args) {
+        String phone = "13639120050";
+        String identity = "1";
+        System.out.println(generatorToken(phone, identity));
     }
 
 }
