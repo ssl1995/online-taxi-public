@@ -3,8 +3,8 @@ package com.ssl.note.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ssl.note.dto.TokenResult;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,20 +17,30 @@ import java.util.HashMap;
  */
 public class JwtUtils {
 
+    /**
+     * 盐值
+     */
     public static final String SIGN = "CPFmsb!@$$";
 
-    public static final String JWT_KEY = "passenger_phone";
+    public static final String JWT_KEY_PHONE = "passenger_phone";
+
+    /**
+     * 身份校验，乘客是1，司机是2
+     */
+    public static final String JWT_KEY_IDENTITY = "identity";
+
 
     /**
      * 生成Token
      */
-    public static String generatorToken(String passengerPhone) {
+    public static String generatorToken(String passengerPhone, String identity) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
         Date date = calendar.getTime();
 
         HashMap<String, String> map = new HashMap<>();
-        map.put(JWT_KEY, passengerPhone);
+        map.put(JWT_KEY_PHONE, passengerPhone);
+        map.put(JWT_KEY_IDENTITY, identity);
 
         // 导入依赖，使用JWT构造器
         JWTCreator.Builder builder = JWT.create();
@@ -45,11 +55,12 @@ public class JwtUtils {
     /**
      * 解密Token
      */
-    public static String parseToken(String token) {
+    public static TokenResult parseToken(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SIGN))
                 .build().verify(token);
-        Claim claim = decodedJWT.getClaim(JWT_KEY);
-        return claim.toString();
+        String phone = decodedJWT.getClaim(JWT_KEY_PHONE).toString();
+        String identity = decodedJWT.getClaim(JWT_KEY_IDENTITY).toString();
+        return TokenResult.builder().phone(phone).identity(identity).build();
     }
 
 }

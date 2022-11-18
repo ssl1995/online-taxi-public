@@ -1,12 +1,14 @@
 package com.ssl.note.service;
 
 import com.ssl.note.constant.CommonStatusEnum;
+import com.ssl.note.constant.IdentityConstant;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.remote.ServicePassengerUserClient;
 import com.ssl.note.remote.ServiceVerificationCodeClient;
 import com.ssl.note.request.VerificationCodeDTO;
 import com.ssl.note.response.NumberCodeResponse;
 import com.ssl.note.response.TokenResponse;
+import com.ssl.note.utils.JwtUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -69,8 +71,12 @@ public class VerificationCodeService {
         servicePassengerUserClient.loginOrRegUser(VerificationCodeDTO.builder().passengerPhone(passengerPhone).build());
 
         // 生成令牌，给到用户，方便多次登录
-        TokenResponse token = new TokenResponse();
-        token.setToken("abcdef");
-        return ResponseResult.success(token);
+        String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+
+
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setToken(token);
+
+        return ResponseResult.success(tokenResponse);
     }
 }
