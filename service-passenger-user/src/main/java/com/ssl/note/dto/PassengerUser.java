@@ -1,5 +1,6 @@
 package com.ssl.note.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  * @Describe:
  */
 @Data
+@Builder
 public class PassengerUser {
 
     private Long id;
@@ -18,8 +20,14 @@ public class PassengerUser {
 
     private String passengerPhone;
 
+    /**
+     * 0=女，1=男
+     */
     private Byte passengerGender;
 
+    /**
+     * 0=有效，1=无效
+     */
     private Byte status;
 
     private LocalDateTime gmtCreate;

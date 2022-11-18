@@ -32,10 +32,18 @@ public class UserService {
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("passenger_phone", passengerPhone);
+        map.put("status", 0);
         List<PassengerUser> passengerUsers = passengerUserMapper.selectByMap(map);
 
         if (CollectionUtils.isEmpty(passengerUsers)) {
             // 插入
+            PassengerUser user = PassengerUser
+                    .builder()
+                    .passengerName("张三")// 可以选择一个随机字符串
+                    .passengerGender((byte) 0)
+                    .passengerPhone(passengerPhone)
+                    .build();
+            passengerUserMapper.insert(user);
 
             return ResponseResult.success();
         }
