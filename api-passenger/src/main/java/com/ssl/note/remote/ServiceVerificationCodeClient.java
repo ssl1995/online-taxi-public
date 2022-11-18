@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @Describe:
  */
 @FeignClient("service-verificationcode")
-public interface VerificationCodeClient {
+public interface ServiceVerificationCodeClient {
 
     @GetMapping("/numberCode/{size}")
     ResponseResult<NumberCodeResponse> getNumberCode(@PathVariable("size") Integer size);
