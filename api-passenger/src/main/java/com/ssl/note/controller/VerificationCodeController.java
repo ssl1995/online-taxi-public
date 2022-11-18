@@ -22,7 +22,7 @@ public class VerificationCodeController {
     private VerificationCodeService verificationCodeService;
 
     /**
-     * 获取随机6位的验证码
+     * 用户获取随机6位的验证码
      */
     @GetMapping("/verification-code")
     public ResponseResult<String> getVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO) {
@@ -31,10 +31,8 @@ public class VerificationCodeController {
         return verificationCodeService.generatorCode(passengerPhone);
     }
 
-
-
     /**
-     * 校验手机号和验证码
+     * 用户校验手机号和验证码
      *
      * @param verificationCodeDTO 请求参数
      * @return 令牌Token

@@ -5,7 +5,6 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ssl.note.dto.TokenResult;
-import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -47,8 +46,8 @@ public class JwtUtils {
         JWTCreator.Builder builder = JWT.create();
         // 传入map，过早jwt参数
         map.forEach(builder::withClaim);
-        // 设置过期时间为1天
-        builder.withExpiresAt(date);
+        // 设置过期时间为1天，后续使用Redis存储
+//        builder.withExpiresAt(date);
         // 使用HMAC256+盐值，加密生成Token
         return builder.sign(Algorithm.HMAC256(SIGN));
     }

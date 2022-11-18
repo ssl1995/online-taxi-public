@@ -34,6 +34,7 @@ public class VerificationCodeService {
     private ServicePassengerUserClient servicePassengerUserClient;
 
     public static final String VERIFICATION_CODE_PREFIX = "passenger-verification-code-";
+    public static final String TOKEN_PREFIX = "token-";
     public static final Integer NUMBER_SIZE = 6;
 
 
@@ -50,10 +51,6 @@ public class VerificationCodeService {
         return ResponseResult.success(value);
     }
 
-    //
-    private String generateKeyByPhone(String phone) {
-        return VERIFICATION_CODE_PREFIX + phone;
-    }
 
     public ResponseResult<TokenResponse> checkCode(String passengerPhone, String numberCode) {
 
@@ -72,11 +69,24 @@ public class VerificationCodeService {
 
         // 生成令牌，给到用户，方便多次登录
         String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
-
+        String tokenKey = generateTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+        // 将token存入redis，过期时间为1个月
+        stringRedisTemplate.opsForValue().set(tokenKey, token, 30, TimeUnit.DAYS);
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setToken(token);
 
         return ResponseResult.success(tokenResponse);
     }
+
+    // 根据手机号生成Redis的Key
+    private String generateKeyByPhone(String phone) {
+        return VERIFICATION_CODE_PREFIX + phone;
+    }
+
+    // 根据手机号、用户列别生成Redis的Key
+    private String generateTokenKey(String phone, String identity) {
+        return TOKEN_PREFIX + phone + "-" + identity;
+    }
+
 }
