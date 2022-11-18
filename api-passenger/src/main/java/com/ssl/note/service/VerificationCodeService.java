@@ -68,7 +68,7 @@ public class VerificationCodeService {
         // 登录或注册用户
         servicePassengerUserClient.loginOrRegUser(VerificationCodeDTO.builder().passengerPhone(passengerPhone).build());
 
-
+        // 生成令牌，给到用户，方便多次登录
         TokenResponse token = new TokenResponse();
         token.setToken("abcdef");
         return ResponseResult.success(token);
