@@ -2,7 +2,7 @@ package com.ssl.note.service;
 
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.constant.IdentityConstant;
-import com.ssl.note.constant.TokenConstants;
+import com.ssl.note.constant.TokenConstant;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.dto.TokenResult;
 import com.ssl.note.response.TokenResponse;
@@ -39,7 +39,7 @@ public class TokenService {
         String identity = tokenResult.getIdentity();
 
         // 读取Redis中数据
-        String refreshTokenKey = RedisPrefixUtils.generateTokenKey(phone, IdentityConstant.PASSENGER_IDENTITY, TokenConstants.REFRESH_TOKEN_TYPE);
+        String refreshTokenKey = RedisPrefixUtils.generateTokenKey(phone, IdentityConstant.PASSENGER_IDENTITY, TokenConstant.REFRESH_TOKEN_TYPE);
         String refreshTokenRedis = stringRedisTemplate.opsForValue().get(refreshTokenKey);
         // 校验refreshToken
         if (StringUtils.isBlank(refreshTokenRedis) || !StringUtils.equals(refreshTokenSrc.trim(), refreshTokenRedis.trim())) {
@@ -47,16 +47,13 @@ public class TokenService {
         }
 
         // 生成双Token
-        String accessToken = JwtUtils.generatorToken(phone, identity, TokenConstants.ACCESS_TOKEN_TYPE);
-        String refreshNewToken = JwtUtils.generatorToken(phone, identity, TokenConstants.REFRESH_TOKEN_TYPE);
+        String accessToken = JwtUtils.generatorToken(phone, identity, TokenConstant.ACCESS_TOKEN_TYPE);
+        String refreshNewToken = JwtUtils.generatorToken(phone, identity, TokenConstant.REFRESH_TOKEN_TYPE);
 
-        String accessTokenKey = RedisPrefixUtils.generateTokenKey(phone, IdentityConstant.PASSENGER_IDENTITY, TokenConstants.ACCESS_TOKEN_TYPE);
+        String accessTokenKey = RedisPrefixUtils.generateTokenKey(phone, IdentityConstant.PASSENGER_IDENTITY, TokenConstant.ACCESS_TOKEN_TYPE);
 
-//        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.DAYS);
-//        stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshNewToken, 31, TimeUnit.DAYS);
-
-        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.SECONDS);
-        stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshNewToken, 60, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshNewToken, 31, TimeUnit.DAYS);
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(accessToken);

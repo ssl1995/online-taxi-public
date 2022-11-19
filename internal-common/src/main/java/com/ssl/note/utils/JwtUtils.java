@@ -3,9 +3,6 @@ package com.ssl.note.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.AlgorithmMismatchException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ssl.note.dto.TokenResult;
 
@@ -35,7 +32,12 @@ public class JwtUtils {
     /**
      * token的类型，便于区分双token
      */
-    public static final String JWT_TOKEN_TYPE = "token-type";
+    public static final String JWT_TOKEN_TYPE = "tokenType";
+
+    /**
+     * token的时间，防止生成相同的Token
+     */
+    public static final String JWT_TOKEN_TIME = "tokenTime";
 
 
     /**
@@ -43,13 +45,15 @@ public class JwtUtils {
      */
     public static String generatorToken(String passengerPhone, String identity, String tokenType) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 1);
-        Date date = calendar.getTime();
+//        calendar.add(Calendar.DATE, 1);
+        Date curDate = calendar.getTime();
 
         HashMap<String, String> map = new HashMap<>();
         map.put(JWT_KEY_PHONE, passengerPhone);
         map.put(JWT_KEY_IDENTITY, identity);
         map.put(JWT_TOKEN_TYPE, tokenType);
+        // 防止Token一样，使用当前时间进行加密
+        map.put(JWT_TOKEN_TIME, curDate.toString());
 
         // 导入依赖，使用JWT构造器
         JWTCreator.Builder builder = JWT.create();

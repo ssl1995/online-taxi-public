@@ -1,9 +1,7 @@
 package com.ssl.note.interceptor;
 
-import com.auth0.jwt.exceptions.AlgorithmMismatchException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.ssl.note.constant.TokenConstants;
+import com.ssl.note.constant.HeaderConstant;
+import com.ssl.note.constant.TokenConstant;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.dto.TokenResult;
 import com.ssl.note.utils.JwtUtils;
@@ -12,9 +10,11 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
@@ -27,21 +27,14 @@ import java.util.Objects;
  */
 public class JwtInterceptor implements HandlerInterceptor {
 
-    @Autowired
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    @Bean
-    public JwtInterceptor jwtInterceptor() {
-        return new JwtInterceptor();
-    }
-
-
-    public static final String AUTHORIZATION = "Authorization";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        String token = request.getHeader(AUTHORIZATION);
+        String token = request.getHeader(HeaderConstant.AUTHORIZATION);
         TokenResult tokenResult = JwtUtils.checkToken(token);
 
         boolean result = true;
@@ -54,13 +47,12 @@ public class JwtInterceptor implements HandlerInterceptor {
             String phone = tokenResult.getPhone();
             String identity = tokenResult.getIdentity();
 
-            String tokenKey = RedisPrefixUtils.generateTokenKey(phone, identity, TokenConstants.ACCESS_TOKEN_TYPE);
-            if (StringUtils.isBlank(tokenKey) || !StringUtils.equals(tokenKey.trim(), token.trim())) {
+            String tokenKey = RedisPrefixUtils.generateTokenKey(phone, identity, TokenConstant.ACCESS_TOKEN_TYPE);
+            String tokenRedis = stringRedisTemplate.opsForValue().get(tokenKey);
+            if (StringUtils.isBlank(tokenKey) || !StringUtils.equals(Objects.requireNonNull(tokenRedis).trim(), token.trim())) {
                 failMsg = "access token invalid";
                 result = false;
             }
-
-            stringRedisTemplate.opsForValue().set(phone,tokenKey);
         }
 
 

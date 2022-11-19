@@ -1,6 +1,5 @@
 package com.ssl.note.service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.ssl.note.dto.PassengerUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.PassengerUserMapper;
@@ -11,7 +10,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @Author: SongShengLin

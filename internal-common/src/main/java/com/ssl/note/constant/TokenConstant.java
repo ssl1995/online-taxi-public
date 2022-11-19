@@ -5,7 +5,7 @@ package com.ssl.note.constant;
  * @date 2022/11/19 11:18
  * @description
  */
-public class TokenConstants {
+public class TokenConstant {
 
     public static final String ACCESS_TOKEN_TYPE = "accessToken";
 
