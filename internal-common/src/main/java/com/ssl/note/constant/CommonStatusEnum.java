@@ -14,11 +14,30 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public enum CommonStatusEnum {
 
+    /**
+     * 成功
+     */
     SUCCESS(1, "success"),
+
+    /**
+     * 失败
+     */
     FAIL(0, "fail"),
+
+    /**
+     * 验证码错误提示，1000-1099
+     */
     VERIFICATION_CODE_ERROR(1099, "验证码不存在/不正确"),
 
-    TOKEN_ERROR(1199,"Token 错误"),
+    /**
+     * Token错误类提示，1100-1199
+     */
+    TOKEN_ERROR(1199, "Token 错误"),
+
+    /**
+     * 用户错误类提示，1200-1299
+     */
+    USER_NOT_EXISTS(1200, "用户不存在"),
     ;
 
     private Integer code;

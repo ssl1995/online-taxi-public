@@ -1,5 +1,6 @@
 package com.ssl.note.service;
 
+import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.PassengerUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.PassengerUserMapper;
@@ -50,4 +51,19 @@ public class UserService {
 
         return ResponseResult.success();
     }
+
+    public ResponseResult<PassengerUser> getUser(String passengerPhone) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("passenger_phone", passengerPhone);
+        map.put("status", 0);
+
+        List<PassengerUser> passengerUsers = passengerUserMapper.selectByMap(map);
+        if (CollectionUtils.isEmpty(passengerUsers)) {
+            return ResponseResult.fail(CommonStatusEnum.USER_NOT_EXISTS.getCode(), CommonStatusEnum.USER_NOT_EXISTS.getMessage());
+        }
+        // 根据手机号唯一查询，取第一个
+        PassengerUser passengerUser = passengerUsers.get(0);
+        return ResponseResult.success(passengerUser);
+    }
+
 }
