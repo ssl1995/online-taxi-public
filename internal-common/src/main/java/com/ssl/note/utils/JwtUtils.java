@@ -3,6 +3,9 @@ package com.ssl.note.utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ssl.note.dto.TokenResult;
 
@@ -67,6 +70,30 @@ public class JwtUtils {
         String phone = decodedJWT.getClaim(JWT_KEY_PHONE).asString();
         String identity = decodedJWT.getClaim(JWT_KEY_IDENTITY).asString();
         return TokenResult.builder().phone(phone).identity(identity).build();
+    }
+
+    public static TokenResult checkToken(String token) {
+        TokenResult tokenResult = null;
+        try {
+            tokenResult = parseToken(token);
+        } catch (Exception e) {
+
+        }
+
+//        catch (SignatureVerificationException e) {
+//            failMsg = "token sign error";
+//            result = false;
+//        } catch (TokenExpiredException e) {
+//            failMsg = "token time out";
+//            result = false;
+//        } catch (AlgorithmMismatchException e) {
+//            failMsg = "token AlgorithmMismatchException";
+//            result = false;
+//        } catch (Exception e) {
+//            failMsg = "token invalid";
+//            result = false;
+//        }
+        return tokenResult;
     }
 
     public static void main(String[] args) {

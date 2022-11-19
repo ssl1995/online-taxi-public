@@ -16,8 +16,9 @@ public enum CommonStatusEnum {
 
     SUCCESS(1, "success"),
     FAIL(0, "fail"),
-
     VERIFICATION_CODE_ERROR(1099, "验证码不存在/不正确"),
+
+    TOKEN_ERROR(1199,"Token 错误"),
     ;
 
     private Integer code;

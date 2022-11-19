@@ -40,27 +40,12 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        boolean result = true;
 
         String token = request.getHeader(AUTHORIZATION);
-        TokenResult tokenResult = new TokenResult();
-        String failMsg = "";
-        try {
-            tokenResult = JwtUtils.parseToken(token);
-        } catch (SignatureVerificationException e) {
-            failMsg = "token sign error";
-            result = false;
-        } catch (TokenExpiredException e) {
-            failMsg = "token time out";
-            result = false;
-        } catch (AlgorithmMismatchException e) {
-            failMsg = "token AlgorithmMismatchException";
-            result = false;
-        } catch (Exception e) {
-            failMsg = "token invalid";
-            result = false;
-        }
+        TokenResult tokenResult = JwtUtils.checkToken(token);
 
+        boolean result = true;
+        String failMsg = "";
         // 从redis中取出token
         if (Objects.isNull(tokenResult)) {
             failMsg = "token invalid";
@@ -70,8 +55,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             String identity = tokenResult.getIdentity();
 
             String tokenKey = RedisPrefixUtils.generateTokenKey(phone, identity, TokenConstants.ACCESS_TOKEN_TYPE);
-            if (!StringUtils.isBlank(tokenKey)
-                    || !StringUtils.equals(tokenKey.trim(), token.trim())) {
+            if (StringUtils.isBlank(tokenKey) || !StringUtils.equals(tokenKey.trim(), token.trim())) {
                 failMsg = "token invalid";
                 result = false;
             }
