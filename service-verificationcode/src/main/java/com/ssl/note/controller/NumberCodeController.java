@@ -14,17 +14,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class NumberCodeController {
 
+    /**
+     * 获取指定位数的随机验证码
+     */
     @GetMapping("/numberCode/{size}")
     public ResponseResult<NumberCodeResponse> getNumberCode(@PathVariable("size") Integer size) {
 
         NumberCodeResponse data = new NumberCodeResponse();
         data.setNumberCode(getRandomSixNum(size));
 
-        System.out.println("获取验证码服务生成:" + data.getNumberCode());
         return ResponseResult.success(data);
     }
 
     private Integer getRandomSixNum(Integer size) {
+
         return (int) ((Math.random() * 9 + 1) * Math.pow(10, size - 1));
     }
 }

@@ -32,7 +32,7 @@ public enum CommonStatusEnum {
     /**
      * Token错误类提示，1100-1199
      */
-    TOKEN_ERROR(1199, "Token 错误"),
+    TOKEN_ERROR(1199, "Token过期或不存在"),
 
     /**
      * 用户错误类提示，1200-1299

@@ -1,0 +1,29 @@
+@startuml
+
+autonumber
+
+actor "客户端" as browser
+participant "api-passenger" as api_passenger
+participant "service-passenger-user" as service_passenger_user #orange
+
+activate browser
+activate api_passenger
+activate service_passenger_user
+
+browser -> api_passenger: 传入用户accessToken
+
+api_passenger -> api_passenger: 解析accessToken，获取用户手机号
+
+api_passenger -> browser: 解析失败，返回失败
+
+api_passenger -> service_passenger_user : 传入用户手机号
+
+service_passenger_user -> service_passenger_user: 根据用户手机号，查询用户
+
+service_passenger_user -> browser: 用户不存在或者用户服务异常，返回失败
+
+service_passenger_user -> api_passenger: 用户信息
+
+api_passenger -> browser: 成功，封装昵称和头像返回
+
+@enduml

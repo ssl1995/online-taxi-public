@@ -19,6 +19,9 @@ public class TokenController {
     @Autowired
     private TokenService tokenService;
 
+    /**
+     * 根据refreshToken刷新Token
+     */
     @PostMapping("/token-refresh")
     public ResponseResult<TokenResponse> refreshToken(@RequestBody TokenResponse tokenRequest) {
         String refreshToken = tokenRequest.getRefreshToken();

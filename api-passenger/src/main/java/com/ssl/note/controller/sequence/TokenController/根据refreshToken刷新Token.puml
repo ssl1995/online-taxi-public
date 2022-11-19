@@ -1,0 +1,24 @@
+@startuml
+
+autonumber
+
+actor "浏览器" as browser
+participant "api-passenger" as api_passenger
+
+activate browser
+activate api_passenger
+
+browser -> api_passenger: 传入用户的refreshTokenSrc
+
+api_passenger -> api_passenger: 解析refreshTokenSrc，生成phone和identity
+
+api_passenger -> api_passenger: 根据phone和identity,从redis中取出refreshToken
+
+api_passenger -> browser: refreshToken=null or !=refreshTokenSrc,返回失败
+
+api_passenger -> api_passenger: 如果相等，重新生成新的双Token，并存入Redis
+
+api_passenger -> browser: 刷新成功，返回新的双Token
+
+
+@enduml

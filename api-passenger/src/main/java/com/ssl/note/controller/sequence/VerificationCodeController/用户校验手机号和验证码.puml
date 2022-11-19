@@ -1,0 +1,27 @@
+@startuml
+
+autonumber
+
+actor "乘客" as user
+participant "api-passenger" as api_passenger
+participant "service-passenger-user" as service_passenger_user #orange
+
+activate user
+activate api_passenger
+activate service_passenger_user
+
+user -> api_passenger: 用户输入手机号和验证码
+
+api_passenger -> api_passenger: 根据手机号从Redis取验证码
+
+api_passenger -> user: 不存在或者不相等，返回错误码
+
+api_passenger -> service_passenger_user: 相等，传输手机号
+
+service_passenger_user -> api_passenger: 查询用户，用户存在返回，用户不存在就新建
+
+api_passenger -> api_passenger: 生成双Token，根据手机号存入Redis
+
+api_passenger --> user:成功，返回双Token
+
+@enduml

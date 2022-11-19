@@ -29,24 +29,23 @@ public class TokenService {
 
 
     public ResponseResult<TokenResponse> refreshToken(String refreshTokenSrc) {
-        // 解析Token
+        // 1.解析原refreshToken，得到用户手机号和identity
         TokenResult tokenResult = JwtUtils.checkToken(refreshTokenSrc);
-
         if (Objects.isNull(tokenResult)) {
             return ResponseResult.fail(CommonStatusEnum.TOKEN_ERROR.getCode(), CommonStatusEnum.TOKEN_ERROR.getMessage());
         }
         String phone = tokenResult.getPhone();
         String identity = tokenResult.getIdentity();
 
-        // 读取Redis中数据
+        // 2.根据用户手机号和identity读取Redis中数据
         String refreshTokenKey = RedisPrefixUtils.generateTokenKey(phone, IdentityConstant.PASSENGER_IDENTITY, TokenConstant.REFRESH_TOKEN_TYPE);
         String refreshTokenRedis = stringRedisTemplate.opsForValue().get(refreshTokenKey);
-        // 校验refreshToken
+        // 3.refreshToken已过期或不存在
         if (StringUtils.isBlank(refreshTokenRedis) || !StringUtils.equals(refreshTokenSrc.trim(), refreshTokenRedis.trim())) {
             return ResponseResult.fail(CommonStatusEnum.TOKEN_ERROR.getCode(), CommonStatusEnum.TOKEN_ERROR.getMessage());
         }
 
-        // 生成双Token
+        // 4.重新生成新的双Token，并存入Redis
         String accessToken = JwtUtils.generatorToken(phone, identity, TokenConstant.ACCESS_TOKEN_TYPE);
         String refreshNewToken = JwtUtils.generatorToken(phone, identity, TokenConstant.REFRESH_TOKEN_TYPE);
 

@@ -40,7 +40,8 @@ public class VerificationCodeService {
     public ResponseResult<String> generatorCode(String passengerPhone) {
         // 获取6位随机验证码
         ResponseResult<NumberCodeResponse> numberCodeResponse = verificationCodeClient.getNumberCode(NUMBER_SIZE);
-        // 存入redis
+
+        // 将随机验证码存入redis，过期时间为2分钟
         String key = RedisPrefixUtils.generateKeyByPhone(passengerPhone);
         String value = numberCodeResponse.getData().getNumberCode() + "";
         stringRedisTemplate.opsForValue().set(key, value, 2L, TimeUnit.MINUTES);
@@ -53,31 +54,28 @@ public class VerificationCodeService {
 
     public ResponseResult<TokenResponse> checkCode(String passengerPhone, String numberCode) {
 
-        // 从redis取出存过的验证码
+        // 1.从redis取出发送验证码时，redis存过的验证码
         String key = RedisPrefixUtils.generateKeyByPhone(passengerPhone);
         String valueRedis = stringRedisTemplate.opsForValue().get(key);
 
-        // 验证码不存在
+        // 2.验证码不存在
         if (StringUtils.isBlank(valueRedis) || !StringUtils.equals(valueRedis, numberCode.trim())) {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getMessage());
         }
 
-        // 验证码存在
+        // 3.验证码存在
         // 登录或注册用户
         servicePassengerUserClient.loginOrRegUser(VerificationCodeDTO.builder().passengerPhone(passengerPhone).build());
 
-        // 双Token
+        // 4.双Token
         String accessToken = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY, TokenConstant.ACCESS_TOKEN_TYPE);
         String refreshToken = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY, TokenConstant.REFRESH_TOKEN_TYPE);
-
 
         String accessTokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY, TokenConstant.ACCESS_TOKEN_TYPE);
         String refreshTokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY, TokenConstant.REFRESH_TOKEN_TYPE);
 
         stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.DAYS);
         stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshToken, 31, TimeUnit.DAYS);
-//        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.SECONDS);
-//        stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshToken, 60, TimeUnit.SECONDS);
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(accessToken);
