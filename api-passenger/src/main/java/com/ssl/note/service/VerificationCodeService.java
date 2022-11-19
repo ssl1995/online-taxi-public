@@ -9,6 +9,7 @@ import com.ssl.note.request.VerificationCodeDTO;
 import com.ssl.note.response.NumberCodeResponse;
 import com.ssl.note.response.TokenResponse;
 import com.ssl.note.utils.JwtUtils;
+import com.ssl.note.utils.RedisPrefixUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -32,9 +33,6 @@ public class VerificationCodeService {
 
     @Autowired
     private ServicePassengerUserClient servicePassengerUserClient;
-
-    public static final String VERIFICATION_CODE_PREFIX = "passenger-verification-code-";
-    public static final String TOKEN_PREFIX = "token-";
     public static final Integer NUMBER_SIZE = 6;
 
 
@@ -42,7 +40,7 @@ public class VerificationCodeService {
         // 获取6位随机验证码
         ResponseResult<NumberCodeResponse> numberCodeResponse = verificationCodeClient.getNumberCode(NUMBER_SIZE);
         // 存入redis
-        String key = generateKeyByPhone(passengerPhone);
+        String key = RedisPrefixUtils.generateKeyByPhone(passengerPhone);
         String value = numberCodeResponse.getData().getNumberCode() + "";
         stringRedisTemplate.opsForValue().set(key, value, 2L, TimeUnit.MINUTES);
 
@@ -55,7 +53,7 @@ public class VerificationCodeService {
     public ResponseResult<TokenResponse> checkCode(String passengerPhone, String numberCode) {
 
         // 从redis取出存过的验证码
-        String key = generateKeyByPhone(passengerPhone);
+        String key = RedisPrefixUtils.generateKeyByPhone(passengerPhone);
         String valueRedis = stringRedisTemplate.opsForValue().get(key);
 
         // 验证码不存在
@@ -69,7 +67,7 @@ public class VerificationCodeService {
 
         // 生成令牌，给到用户，方便多次登录
         String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
-        String tokenKey = generateTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+        String tokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
         // 将token存入redis，过期时间为1个月
         stringRedisTemplate.opsForValue().set(tokenKey, token, 30, TimeUnit.DAYS);
 
@@ -77,16 +75,6 @@ public class VerificationCodeService {
         tokenResponse.setToken(token);
 
         return ResponseResult.success(tokenResponse);
-    }
-
-    // 根据手机号生成Redis的Key
-    private String generateKeyByPhone(String phone) {
-        return VERIFICATION_CODE_PREFIX + phone;
-    }
-
-    // 根据手机号、用户列别生成Redis的Key
-    private String generateTokenKey(String phone, String identity) {
-        return TOKEN_PREFIX + phone + "-" + identity;
     }
 
 }

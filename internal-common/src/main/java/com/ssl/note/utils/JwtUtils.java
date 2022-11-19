@@ -46,7 +46,7 @@ public class JwtUtils {
         JWTCreator.Builder builder = JWT.create();
         // 传入map，过早jwt参数
         map.forEach(builder::withClaim);
-        // 设置过期时间为1天，后续使用Redis存储
+        // 设置过期时间为1天，后续使用Redis存储过期时间
 //        builder.withExpiresAt(date);
         // 使用HMAC256+盐值，加密生成Token
         return builder.sign(Algorithm.HMAC256(SIGN));
@@ -58,8 +58,8 @@ public class JwtUtils {
     public static TokenResult parseToken(String token) {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SIGN))
                 .build().verify(token);
-        String phone = decodedJWT.getClaim(JWT_KEY_PHONE).toString();
-        String identity = decodedJWT.getClaim(JWT_KEY_IDENTITY).toString();
+        String phone = decodedJWT.getClaim(JWT_KEY_PHONE).asString();
+        String identity = decodedJWT.getClaim(JWT_KEY_IDENTITY).asString();
         return TokenResult.builder().phone(phone).identity(identity).build();
     }
 
