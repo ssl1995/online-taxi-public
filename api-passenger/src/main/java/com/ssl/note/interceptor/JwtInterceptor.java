@@ -48,7 +48,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         String failMsg = "";
         // 从redis中取出token
         if (Objects.isNull(tokenResult)) {
-            failMsg = "token invalid";
+            failMsg = "access token invalid";
             result = false;
         } else {
             String phone = tokenResult.getPhone();
@@ -56,7 +56,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
             String tokenKey = RedisPrefixUtils.generateTokenKey(phone, identity, TokenConstants.ACCESS_TOKEN_TYPE);
             if (StringUtils.isBlank(tokenKey) || !StringUtils.equals(tokenKey.trim(), token.trim())) {
-                failMsg = "token invalid";
+                failMsg = "access token invalid";
                 result = false;
             }
 

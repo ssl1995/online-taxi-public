@@ -52,8 +52,11 @@ public class TokenService {
 
         String accessTokenKey = RedisPrefixUtils.generateTokenKey(phone, IdentityConstant.PASSENGER_IDENTITY, TokenConstants.ACCESS_TOKEN_TYPE);
 
-        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.DAYS);
-        stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshNewToken, 31, TimeUnit.DAYS);
+//        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.DAYS);
+//        stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshNewToken, 31, TimeUnit.DAYS);
+
+        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshNewToken, 60, TimeUnit.SECONDS);
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(accessToken);
