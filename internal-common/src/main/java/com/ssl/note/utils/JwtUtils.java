@@ -29,11 +29,16 @@ public class JwtUtils {
      */
     public static final String JWT_KEY_IDENTITY = "identity";
 
+    /**
+     * token的类型，便于区分双token
+     */
+    public static final String JWT_TOKEN_TYPE = "token-type";
+
 
     /**
      * 生成Token
      */
-    public static String generatorToken(String passengerPhone, String identity) {
+    public static String generatorToken(String passengerPhone, String identity, String tokenType) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
         Date date = calendar.getTime();
@@ -41,10 +46,11 @@ public class JwtUtils {
         HashMap<String, String> map = new HashMap<>();
         map.put(JWT_KEY_PHONE, passengerPhone);
         map.put(JWT_KEY_IDENTITY, identity);
+        map.put(JWT_TOKEN_TYPE, tokenType);
 
         // 导入依赖，使用JWT构造器
         JWTCreator.Builder builder = JWT.create();
-        // 传入map，过早jwt参数
+        // 传入map,设置Jwt参数
         map.forEach(builder::withClaim);
         // 设置过期时间为1天，后续使用Redis存储过期时间
 //        builder.withExpiresAt(date);
@@ -66,7 +72,7 @@ public class JwtUtils {
     public static void main(String[] args) {
         String phone = "13639120050";
         String identity = "1";
-        System.out.println(generatorToken(phone, identity));
+//        System.out.println(generatorToken(phone, identity));
     }
 
 }

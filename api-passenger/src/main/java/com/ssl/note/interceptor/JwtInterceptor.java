@@ -3,6 +3,7 @@ package com.ssl.note.interceptor;
 import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.ssl.note.constant.TokenConstants;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.dto.TokenResult;
 import com.ssl.note.utils.JwtUtils;
@@ -68,7 +69,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             String phone = tokenResult.getPhone();
             String identity = tokenResult.getIdentity();
 
-            String tokenKey = RedisPrefixUtils.generateTokenKey(phone, identity);
+            String tokenKey = RedisPrefixUtils.generateTokenKey(phone, identity, TokenConstants.ACCESS_TOKEN_TYPE);
             if (!StringUtils.isBlank(tokenKey)
                     || !StringUtils.equals(tokenKey.trim(), token.trim())) {
                 failMsg = "token invalid";
