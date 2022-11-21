@@ -1,0 +1,33 @@
+@startuml
+
+autonumber
+
+actor "乘客" as user
+participant "api-passenger" as api_passenger
+participant "service-price" as service_price
+participant "service-map" as service_map
+
+activate user
+activate service_price
+activate service_map
+
+user -> api_passenger:起点终点经纬度
+
+api_passenger -> service_price:起点终点经纬度
+
+service_price -> service_map:起点终点经纬度
+
+service_map -> service_map:调用地图api
+
+service_map -> service_price:返回距离和时长
+
+service_price -> service_price:根据计算素材、计价规则、预估价格预估价格
+
+service_price -> api_passenger:获取预估价格
+
+
+api_passenger -> user:获取预估价格
+
+
+
+@enduml
