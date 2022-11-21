@@ -3,6 +3,7 @@ package com.ssl.note.service;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.request.ForecastPriceDTO;
 import com.ssl.note.response.DirectionResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,14 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Service
 public class DirectionService {
 
+    @Autowired
+    private MapDirectionClient mapDirectionClient;
+
     public ResponseResult<DirectionResponse> dirving(String depLongitude, String depLatitude, String destLongitude, String destLatitude) {
 
-        DirectionResponse directionResponse = DirectionResponse
-                .builder()
-                .distance(13)
-                .duration(14)
-                .build();
+        DirectionResponse direction = mapDirectionClient.direction(depLongitude, depLatitude, destLongitude, destLatitude);
 
-        return ResponseResult.success(directionResponse);
+        return ResponseResult.success(direction);
     }
 }

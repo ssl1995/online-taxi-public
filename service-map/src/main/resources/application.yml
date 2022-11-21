@@ -10,3 +10,6 @@ spring:
     nacos:
       discovery:
         server-addr: http://101.201.154.144:8848
+
+amap:
+  key: f7db1c44b0132b46fb2a78cc0f6e25be
