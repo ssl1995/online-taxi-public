@@ -1,0 +1,12 @@
+server:
+  port: 8084
+
+spring:
+  profiles:
+    active: default
+  application:
+    name: service-price
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://101.201.154.144:8848
