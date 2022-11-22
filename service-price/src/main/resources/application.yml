@@ -10,3 +10,9 @@ spring:
     nacos:
       discovery:
         server-addr: http://101.201.154.144:8848
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include: '*'
