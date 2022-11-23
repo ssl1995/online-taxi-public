@@ -38,6 +38,11 @@ public enum CommonStatusEnum {
      * 用户错误类提示，1200-1299
      */
     USER_NOT_EXISTS(1200, "用户不存在"),
+
+    /**
+     * 计价规则错误类提示，1300-1399
+     */
+    PRICE_RULE_EMPTY(1300, "计价规则不存在"),
     ;
     private Integer code;
     private String message;

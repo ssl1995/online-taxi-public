@@ -10,9 +10,20 @@ spring:
     nacos:
       discovery:
         server-addr: http://101.201.154.144:8848
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://rm-2zep5730lmk5s5dy37o.mysql.rds.aliyuncs.com:3306/service-price?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    password: Ssl@199502
+    username: root
+
 
 management:
   endpoint:
     web:
       exposure:
         include: '*'
+
+# mybatis-plus打印sql日志
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
