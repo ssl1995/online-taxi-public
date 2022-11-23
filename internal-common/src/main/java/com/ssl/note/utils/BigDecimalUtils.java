@@ -32,7 +32,7 @@ public class BigDecimalUtils {
     }
 
     /**
-     * 除法
+     * 乘法
      */
     public static double multiply(double d1, double d2) {
         BigDecimal b1 = BigDecimal.valueOf(d1);
