@@ -1,6 +1,9 @@
 package com.ssl.note.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author: SongShengLin
@@ -8,6 +11,9 @@ import lombok.Data;
  * @Describe:
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ForecastPriceDTO {
 
     private String depLongitude;

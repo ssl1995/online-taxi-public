@@ -5,10 +5,7 @@ import com.ssl.note.request.ForecastPriceDTO;
 import com.ssl.note.response.DirectionResponse;
 import com.ssl.note.service.DirectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: SongShengLin
@@ -23,7 +20,7 @@ public class DirectionController {
     @Autowired
     private DirectionService directionService;
 
-    @PostMapping("/driving")
+    @GetMapping("/driving")
     public ResponseResult<DirectionResponse> dirving(@RequestBody ForecastPriceDTO forecastPriceDTO) {
         String depLongitude = forecastPriceDTO.getDepLongitude();
         String depLatitude = forecastPriceDTO.getDepLatitude();

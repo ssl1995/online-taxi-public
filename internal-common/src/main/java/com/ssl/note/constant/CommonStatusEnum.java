@@ -39,7 +39,6 @@ public enum CommonStatusEnum {
      */
     USER_NOT_EXISTS(1200, "用户不存在"),
     ;
-
     private Integer code;
     private String message;
 }
