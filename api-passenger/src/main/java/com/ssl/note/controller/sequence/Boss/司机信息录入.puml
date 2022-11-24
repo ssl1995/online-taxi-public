@@ -1,0 +1,33 @@
+@startuml
+
+autonumber
+
+actor "boss客户端" as boss
+participant "api-boss" as api_boss
+participant "service-driver-user" as service_driver_user
+participant "api-driver" as api_driver
+participant "司机客户端" as driver_boss
+
+
+activate boss
+activate api_boss
+activate service_driver_user
+activate api_driver
+activate api_boss
+activate driver_boss
+
+boss -> api_boss: 录入司机信息
+api_boss->service_driver_user: 传递司机信息
+
+
+driver_boss -> api_driver: 司机自己也可录入自己信息
+api_driver -> service_driver_user: 传递司机信息
+
+service_driver_user -> service_driver_user: curd
+
+service_driver_user -> api_boss : 返回结果
+
+api_boss -> boss: 返回结果
+
+
+@enduml

@@ -1,11 +1,10 @@
 package com.ssl.note.service;
 
 import com.ssl.note.dto.ResponseResult;
-import com.ssl.note.request.ForecastPriceDTO;
+import com.ssl.note.remote.MapDirectionClient;
 import com.ssl.note.response.DirectionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @Author: SongShengLin

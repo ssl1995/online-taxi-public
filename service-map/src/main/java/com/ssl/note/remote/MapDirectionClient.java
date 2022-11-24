@@ -1,4 +1,4 @@
-package com.ssl.note.service;
+package com.ssl.note.remote;
 
 import ch.qos.logback.core.status.StatusUtil;
 import com.ssl.note.constant.AMapConfigConstants;
