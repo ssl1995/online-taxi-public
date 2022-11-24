@@ -43,6 +43,11 @@ public enum CommonStatusEnum {
      * 计价规则错误类提示，1300-1399
      */
     PRICE_RULE_EMPTY(1300, "计价规则不存在"),
+
+    /**
+     * 计价规则错误类提示，1400-1499
+     */
+    MAP_DISTRICT_ERROR(1400, "调用行政区域错误"),
     ;
     private Integer code;
     private String message;
