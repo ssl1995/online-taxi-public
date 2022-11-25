@@ -39,7 +39,7 @@ public class UserService {
             PassengerUser user = PassengerUser
                     .builder()
                     .passengerName("张三")// 可以选择一个随机字符串
-                    .passengerGender((byte) 0)
+                    .passengerGender((byte) 2)
                     .passengerPhone(passengerPhone)
                     .build();
             passengerUserMapper.insert(user);

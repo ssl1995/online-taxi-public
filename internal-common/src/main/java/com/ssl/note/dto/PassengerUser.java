@@ -27,7 +27,7 @@ public class PassengerUser implements Serializable {
     private String passengerPhone;
 
     /**
-     * 用户性别：0=女，1=男
+     * 用户性别：0=未知，1=男，2=女
      */
     private Byte passengerGender;
 
