@@ -4,10 +4,7 @@ import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.service.DriverUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: SongShengLin
@@ -21,8 +18,13 @@ public class DriverUserController {
     private DriverUserService driverUserService;
 
     @PostMapping("/user")
-    public ResponseResult<String> saveUser(@RequestBody DriverUser driverUser) {
-        return driverUserService.saveUser(driverUser);
+    public ResponseResult<String> addUser(@RequestBody DriverUser driverUser) {
+        return driverUserService.addUser(driverUser);
+    }
+
+    @PutMapping("/user")
+    public ResponseResult<String> updateUser(@RequestBody DriverUser driverUser) {
+        return driverUserService.updateUser(driverUser);
     }
 
 

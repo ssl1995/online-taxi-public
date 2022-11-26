@@ -1,6 +1,5 @@
 package com.ssl.note.service;
 
-import com.google.common.collect.Lists;
 import com.ssl.note.constant.AMapConfigConstants;
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.DicDistrict;
@@ -9,11 +8,8 @@ import com.ssl.note.mapper.DictDistrictMapper;
 import com.ssl.note.remote.MapDicDistrictClient;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @Author: SongShengLin

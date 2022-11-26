@@ -1,17 +1,12 @@
 package com.ssl.note.remote;
 
 import com.ssl.note.constant.AMapConfigConstants;
-import com.ssl.note.dto.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Objects;
 
 /**
  * @Author: SongShengLin

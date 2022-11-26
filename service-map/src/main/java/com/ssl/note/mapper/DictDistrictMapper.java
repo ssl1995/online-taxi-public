@@ -1,8 +1,8 @@
 package com.ssl.note.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.springframework.stereotype.Repository;
 import com.ssl.note.dto.DicDistrict;
+import org.springframework.stereotype.Repository;
 
 /**
  * @Author: SongShengLin

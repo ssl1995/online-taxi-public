@@ -1,12 +1,10 @@
 package com.ssl.note.remote;
 
-import ch.qos.logback.core.status.StatusUtil;
 import com.ssl.note.constant.AMapConfigConstants;
 import com.ssl.note.response.DirectionResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

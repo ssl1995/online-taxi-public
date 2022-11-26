@@ -1,13 +1,14 @@
 package com.ssl.note.controller;
 
-import com.ssl.note.dto.DicDistrict;
 import com.ssl.note.dto.ResponseResult;
-import com.ssl.note.mapper.DictDistrictMapper;
 import com.ssl.note.request.ForecastPriceDTO;
 import com.ssl.note.response.DirectionResponse;
 import com.ssl.note.service.DirectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author: SongShengLin
