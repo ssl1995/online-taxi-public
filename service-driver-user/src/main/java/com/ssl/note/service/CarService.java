@@ -1,6 +1,13 @@
 package com.ssl.note.service;
 
+import com.ssl.note.dto.Car;
+import com.ssl.note.mapper.CarMapper;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * @Author: SongShengLin
@@ -9,4 +16,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CarService {
+
+    @Autowired
+    private CarMapper carMapper;
+
 }
