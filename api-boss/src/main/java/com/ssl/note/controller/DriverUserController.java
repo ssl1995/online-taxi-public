@@ -1,5 +1,7 @@
 package com.ssl.note.controller;
 
+import com.ssl.note.dto.Car;
+import com.ssl.note.dto.DriverCarBindingRelationship;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.service.DriverUserService;
@@ -25,5 +27,20 @@ public class DriverUserController {
     @PutMapping("/driver-user")
     public ResponseResult<String> updateDriverUser(@RequestBody DriverUser driverUser) {
         return driverUserService.updateDriverUser(driverUser);
+    }
+
+    @PostMapping("/car")
+    public ResponseResult<String> addCar(@RequestBody Car car) {
+        return driverUserService.addCar(car);
+    }
+
+    @PostMapping("/dirver-car-binding-relationship/bind")
+    public ResponseResult<String> bind(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship) {
+        return driverUserService.bind(driverCarBindingRelationship);
+    }
+
+    @PostMapping("/dirver-car-binding-relationship/unbind")
+    public ResponseResult<String> unbind(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship) {
+        return driverUserService.unbind(driverCarBindingRelationship);
     }
 }
