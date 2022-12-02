@@ -1,10 +1,13 @@
 package com.ssl.note.service;
 
+import com.ssl.note.constant.CommonStatusEnum;
+import com.ssl.note.constant.DriverCarConstants;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.DriverUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -21,12 +24,17 @@ public class DriverUserService {
     @Autowired
     private DriverUserMapper driverUserMapper;
 
-    public DriverUser getTest(Long id) {
+    public ResponseResult<DriverUser> getDriverUserByPhone(String driverPhone) {
 
         HashMap<String, Object> map = new HashMap<>();
-        map.put("id", id);
+        map.put("driver_phone", driverPhone);
+        map.put("state", DriverCarConstants.DRIVER_STATE_VALID);
         List<DriverUser> driverUsers = driverUserMapper.selectByMap(map);
-        return driverUsers.get(0);
+        if (CollectionUtils.isEmpty(driverUsers)) {
+            return ResponseResult.fail(CommonStatusEnum.DRIVER_NOT_EXIST.getCode(), CommonStatusEnum.DRIVER_NOT_EXIST.getMessage());
+        }
+
+        return ResponseResult.success(driverUsers.get(0));
     }
 
     public ResponseResult<String> addUser(DriverUser driverUser) {

@@ -2,9 +2,12 @@ package com.ssl.note.controller;
 
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
+import com.ssl.note.response.DriverUserExistsResponse;
 import com.ssl.note.service.DriverUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 /**
  * @Author: SongShengLin
@@ -28,9 +31,23 @@ public class DriverUserController {
     }
 
 
-    @GetMapping("/test")
-    public DriverUser test(Long id) {
-        return driverUserService.getTest(id);
+    @GetMapping("/check-driver/{driverPhone}")
+    public ResponseResult<DriverUserExistsResponse> getUser(@PathVariable("driverPhone") String driverPhone) {
+        ResponseResult<DriverUser> driverUserResp = driverUserService.getDriverUserByPhone(driverPhone);
+        DriverUserExistsResponse resp = new DriverUserExistsResponse();
+
+        if (Objects.isNull(driverUserResp)
+                || Objects.isNull(driverUserResp.getData())
+                || Objects.isNull(driverUserResp.getData().getDriverPhone())) {
+            resp.setIfExists(0);
+            resp.setDriverPhone(driverPhone);
+            return ResponseResult.success(resp);
+        }
+
+        resp.setIfExists(1);
+        resp.setDriverPhone(driverUserResp.getData().getDriverPhone());
+        return ResponseResult.success(resp);
     }
+
 
 }
