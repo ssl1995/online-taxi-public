@@ -1,7 +1,7 @@
 package com.ssl.note.mapper;
 
-import com.ssl.note.dto.Car;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.ssl.note.dto.Car;
 import org.springframework.stereotype.Repository;
 
 /**

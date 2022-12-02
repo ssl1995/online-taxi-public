@@ -3,9 +3,7 @@ package com.ssl.note.controller;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.beans.factory.annotation.Autowired;import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 

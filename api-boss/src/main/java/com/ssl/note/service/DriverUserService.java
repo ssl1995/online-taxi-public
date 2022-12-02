@@ -1,7 +1,6 @@
 package com.ssl.note.service;
 
 import com.ssl.note.dto.Car;
-import com.ssl.note.dto.DriverCarBindingRelationship;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.remote.DriverUserClient;
@@ -30,13 +29,5 @@ public class DriverUserService {
 
     public ResponseResult<String> addCar(Car car) {
         return driverUserClient.saveCar(car);
-    }
-
-    public ResponseResult<String> bind(DriverCarBindingRelationship driverCarBindingRelationship) {
-        return driverUserClient.bind(driverCarBindingRelationship);
-    }
-
-    public ResponseResult<String> unbind(DriverCarBindingRelationship driverCarBindingRelationship) {
-        return driverUserClient.unbind(driverCarBindingRelationship);
     }
 }
