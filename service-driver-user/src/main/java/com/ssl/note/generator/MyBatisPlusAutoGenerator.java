@@ -12,7 +12,7 @@ import java.util.Collections;
  * @Describe:
  */
 public class MyBatisPlusAutoGenerator {
-    public static final String TABLE_NAME = "driver_car_binding_relationship";
+    public static final String TABLE_NAME = "driver_user_work_status";
 
 
     /**

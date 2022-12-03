@@ -37,4 +37,20 @@ public class DriverCarConstants {
      * 司机不存在
      */
     public static final Integer DRIVER_NOT_EXISTS = 0;
+
+
+    /**
+     * 司机工作状态：0=收车
+     */
+    public static final Integer DRIVER_WORK_STATUS_STOP = 0;
+
+    /**
+     * 司机工作状态：1=出车
+     */
+    public static final Integer DRIVER_WORK_STATUS_START = 1;
+
+    /**
+     * 司机工作状态：2=暂停
+     */
+    public static final Integer DRIVER_WORK_STATUS_SUSPEND = 2;
 }

@@ -3,8 +3,10 @@ package com.ssl.note.service;
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.constant.DriverCarConstants;
 import com.ssl.note.dto.DriverUser;
+import com.ssl.note.dto.DriverUserWorkStatus;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.DriverUserMapper;
+import com.ssl.note.mapper.DriverUserWorkStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -24,6 +26,9 @@ public class DriverUserService {
     @Autowired
     private DriverUserMapper driverUserMapper;
 
+    @Autowired
+    private DriverUserWorkStatusMapper driverUserWorkStatusMapper;
+
     public ResponseResult<DriverUser> getDriverUserByPhone(String driverPhone) {
 
         HashMap<String, Object> map = new HashMap<>();
@@ -41,7 +46,17 @@ public class DriverUserService {
         LocalDateTime now = LocalDateTime.now();
         driverUser.setGmtCreate(now);
         driverUser.setGmtModified(now);
+        // 保存司机
         driverUserMapper.insert(driverUser);
+
+        // 保存司机工作状态表
+        DriverUserWorkStatus driverUserWorkStatus = new DriverUserWorkStatus();
+        driverUserWorkStatus.setDriverId(driverUser.getId());
+        driverUserWorkStatus.setWorkStatus(DriverCarConstants.DRIVER_WORK_STATUS_STOP);
+        driverUserWorkStatus.setGmtCreate(now);
+        driverUserWorkStatus.setGmtModified(now);
+        driverUserWorkStatusMapper.insert(driverUserWorkStatus);
+
         return ResponseResult.success("");
     }
 
