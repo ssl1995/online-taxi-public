@@ -2,10 +2,12 @@ package com.ssl.note.controller;
 
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.request.VerificationCodeDTO;
+import com.ssl.note.response.TokenResponse;
 import com.ssl.note.service.VerificationCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +28,12 @@ public class VerificationCodeController {
         String driverPhone = verificationCodeDTO.getDriverPhone();
         log.info("司机的号码：" + driverPhone);
         return verificationCodeService.checkAndSendVerificationCode(driverPhone);
+    }
+
+    @PostMapping("/verification-code-check")
+    public ResponseResult<TokenResponse> getVerificationCodeCheck(@RequestBody VerificationCodeDTO verificationCodeDTO) {
+
+        return verificationCodeService.checkCode(verificationCodeDTO.getDriverPhone(), verificationCodeDTO.getVerificationCode());
     }
 
 }

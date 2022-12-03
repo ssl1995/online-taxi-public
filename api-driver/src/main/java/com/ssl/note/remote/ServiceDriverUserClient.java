@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * @Date: 2022/11/26 16:41
  * @Describe:
  */
-@FeignClient(name = "service-drive-user",contextId = "api-driver")
+@FeignClient(name = "service-drive-user",contextId = "api-driver-service-drive-user")
 public interface ServiceDriverUserClient {
 
     @PostMapping("/user")
