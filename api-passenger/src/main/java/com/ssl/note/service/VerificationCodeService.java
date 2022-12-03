@@ -42,7 +42,7 @@ public class VerificationCodeService {
         ResponseResult<NumberCodeResponse> numberCodeResponse = verificationCodeClient.getNumberCode(NUMBER_SIZE);
 
         // 将随机验证码存入redis，过期时间为2分钟
-        String key = RedisPrefixUtils.generateKeyByPhone(passengerPhone);
+        String key = RedisPrefixUtils.generateKeyByPhone(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
         String value = numberCodeResponse.getData().getNumberCode() + "";
         stringRedisTemplate.opsForValue().set(key, value, 2L, TimeUnit.MINUTES);
 
@@ -55,7 +55,7 @@ public class VerificationCodeService {
     public ResponseResult<TokenResponse> checkCode(String passengerPhone, String numberCode) {
 
         // 1.从redis取出发送验证码时，redis存过的验证码
-        String key = RedisPrefixUtils.generateKeyByPhone(passengerPhone);
+        String key = RedisPrefixUtils.generateKeyByPhone(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
         String valueRedis = stringRedisTemplate.opsForValue().get(key);
 
         // 2.验证码不存在
