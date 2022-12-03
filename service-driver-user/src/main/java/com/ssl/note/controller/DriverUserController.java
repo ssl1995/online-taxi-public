@@ -1,5 +1,6 @@
 package com.ssl.note.controller;
 
+import com.ssl.note.constant.DriverCarConstants;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.DriverUserExistsResponse;
@@ -39,12 +40,12 @@ public class DriverUserController {
         if (Objects.isNull(driverUserResp)
                 || Objects.isNull(driverUserResp.getData())
                 || Objects.isNull(driverUserResp.getData().getDriverPhone())) {
-            resp.setIfExists(0);
+            resp.setIfExists(DriverCarConstants.DRIVER_NOT_EXISTS);
             resp.setDriverPhone(driverPhone);
             return ResponseResult.success(resp);
         }
 
-        resp.setIfExists(1);
+        resp.setIfExists(DriverCarConstants.DRIVER_EXISTS);
         resp.setDriverPhone(driverUserResp.getData().getDriverPhone());
         return ResponseResult.success(resp);
     }
