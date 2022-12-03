@@ -1,0 +1,18 @@
+{
+	"data": {
+		"name": "飞滴出行service",
+		"sid": 841396
+	},
+	"errcode": 10000,
+	"errdetail": null,
+	"errmsg": "OK"
+}
+
+{
+	"code": 1,
+	"message": "success",
+	"data": {
+	    "name":"飞滴出行服务",
+		"sid": "839514"
+	}
+}

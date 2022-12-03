@@ -10,6 +10,8 @@ public class AMapConfigConstants {
     public static final String DIRECTION_URL = "https://restapi.amap.com/v3/direction/driving";
 
     public static final String DIC_DISTRICT_URL = "https://restapi.amap.com/v3/config/district";
+
+    public static final String SERVICE_ADD_URL = "https://tsapi.amap.com/v1/track/service/add";
     public static final String STATUS = "status";
 
     public static final String ROUTE = "route";
@@ -29,5 +31,7 @@ public class AMapConfigConstants {
     public static final String LEVEL = "level";
 
     public static final String STREET = "street";
+
+    public static final Integer ERROR_CODE_SUCCESS = 10000;
 
 }
