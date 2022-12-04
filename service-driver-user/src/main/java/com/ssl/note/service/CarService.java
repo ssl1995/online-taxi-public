@@ -7,7 +7,6 @@ import com.ssl.note.mapper.CarMapper;
 import com.ssl.note.remote.PointClient;
 import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.remote.TrackClient;
-import com.ssl.note.request.PointRequest;
 import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.response.TrackResponse;
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +36,7 @@ public class CarService {
     @Autowired
     private PointClient pointClient;
 
-    public ResponseResult<String> saveCar(Car car) {
+    public ResponseResult<String> addCar(Car car) {
         LocalDateTime now = LocalDateTime.now();
         car.setGmtCreate(now);
         car.setGmtModified(now);
@@ -71,4 +70,13 @@ public class CarService {
         return ResponseResult.success("");
     }
 
+    public ResponseResult<Car> getCarById(Long carId) {
+        Car car;
+        try {
+            car = carMapper.selectById(carId);
+        } catch (Exception e) {
+            return ResponseResult.fail(CommonStatusEnum.FAIL.getCode(), "查询车辆不存在!");
+        }
+        return ResponseResult.success(car);
+    }
 }

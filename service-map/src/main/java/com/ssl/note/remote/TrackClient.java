@@ -3,7 +3,6 @@ package com.ssl.note.remote;
 import com.ssl.note.constant.AMapConfigConstants;
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.ResponseResult;
-import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.response.TrackResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;

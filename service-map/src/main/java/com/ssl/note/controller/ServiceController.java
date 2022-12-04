@@ -4,7 +4,10 @@ import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.ServiceResponse;
 import com.ssl.note.service.ServiceFromMapService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author: SongShengLin

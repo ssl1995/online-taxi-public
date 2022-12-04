@@ -7,16 +7,15 @@ import lombok.NoArgsConstructor;
 
 /**
  * @Author: SongShengLin
- * @Date: 2022/12/04 16:10
+ * @Date: 2022/12/04 16:51
  * @Describe:
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PointDTO {
-
-    private String location;
-    private String locatetime;
+public class ApiDriverPointRequest {
+    private Long carId;
+    private PointDTO[] points;
 
 }

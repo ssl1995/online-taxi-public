@@ -5,9 +5,7 @@ import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.request.PointDTO;
 import com.ssl.note.request.PointRequest;
-import com.ssl.note.response.TrackResponse;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,12 +55,12 @@ public class PointClient {
         int errCode = (int) responseJson.get("errcode");
         // 请求失败
         if (!Objects.equals(errCode, AMapConfigConstants.ERROR_CODE_SUCCESS)) {
-            log.error("上传轨迹失败，请求url={}，请求结果={}", url, responseJson);
+            log.error("上传轨迹失败，请求url={}，请求结果={}", URI.create(url), responseJson);
             return ResponseResult.fail(CommonStatusEnum.FAIL.getCode(), String.valueOf(responseJson.get("errmsg")));
         }
 
         // 请求成功
-        log.info("上传轨迹成功，请求url={}，请求结果={}", url, responseJson);
+        log.info("上传轨迹成功，请求url={}，请求结果={}", URI.create(url), responseJson);
         return ResponseResult.success("");
     }
 

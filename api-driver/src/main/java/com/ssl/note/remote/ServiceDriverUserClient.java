@@ -1,5 +1,6 @@
 package com.ssl.note.remote;
 
+import com.ssl.note.dto.Car;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.DriverUserExistsResponse;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  * @Date: 2022/11/26 16:41
  * @Describe:
  */
-@FeignClient(name = "service-drive-user",contextId = "api-driver-service-drive-user")
+@FeignClient(name = "service-drive-user", contextId = "api-driver-service-drive-user")
 public interface ServiceDriverUserClient {
 
     @PostMapping("/user")
@@ -23,4 +24,6 @@ public interface ServiceDriverUserClient {
     @GetMapping("/check-driver/{driverPhone}")
     ResponseResult<DriverUserExistsResponse> checkDriver(@PathVariable("driverPhone") String driverPhone);
 
+    @GetMapping("/car")
+    ResponseResult<Car> getCarById(@RequestParam("carId") Long carId);
 }

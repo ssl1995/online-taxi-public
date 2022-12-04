@@ -5,9 +5,7 @@ import com.ssl.note.dto.Car;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -17,9 +15,12 @@ public class CarController {
     private CarService carService;
 
     @PostMapping("/car")
-    public ResponseResult<String> saveCar(@RequestBody Car car) {
-        return carService.saveCar(car);
+    public ResponseResult<String> addCar(@RequestBody Car car) {
+        return carService.addCar(car);
     }
 
-
+    @GetMapping("/car")
+    public ResponseResult<Car> getCarById(@RequestParam("carId") Long carId) {
+        return carService.getCarById(carId);
+    }
 }
