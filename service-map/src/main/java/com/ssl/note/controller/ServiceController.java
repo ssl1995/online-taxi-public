@@ -4,10 +4,7 @@ import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.ServiceResponse;
 import com.ssl.note.service.ServiceFromMapService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: SongShengLin
@@ -22,7 +19,7 @@ public class ServiceController {
     private ServiceFromMapService serviceFromMapService;
 
     @PostMapping("/add")
-    public ResponseResult<ServiceResponse> addService(String name) {
+    public ResponseResult<ServiceResponse> addService(@RequestParam("name") String name) {
         return serviceFromMapService.addService(name);
     }
 
