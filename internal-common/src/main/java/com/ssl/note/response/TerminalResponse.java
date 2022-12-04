@@ -15,6 +15,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class TerminalResponse {
-
+    /**
+     * 终端Id
+     */
     private String tid;
+    /**
+     * car的id
+     */
+    private Long carId;
+    /**
+     * 纬度
+     */
+    private String latitude;
+    /**
+     * 经度
+     */
+    private String longitude;
+
 }

@@ -17,6 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface TerminalClient {
 
     @PostMapping("/add")
-    ResponseResult<TerminalResponse> addTerminal(@RequestParam("name") String name);
+    ResponseResult<TerminalResponse> addTerminal(@RequestParam("name") String name, @RequestParam("desc") String desc);
 
 }

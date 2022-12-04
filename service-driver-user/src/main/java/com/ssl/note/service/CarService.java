@@ -9,11 +9,13 @@ import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.remote.TrackClient;
 import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.response.TrackResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -22,6 +24,7 @@ import java.util.Objects;
  * @Describe:
  */
 @Service
+@Slf4j
 public class CarService {
 
     @Autowired
@@ -33,16 +36,17 @@ public class CarService {
     @Autowired
     private TrackClient trackClient;
 
-    @Autowired
-    private PointClient pointClient;
-
     public ResponseResult<String> addCar(Car car) {
         LocalDateTime now = LocalDateTime.now();
         car.setGmtCreate(now);
         car.setGmtModified(now);
 
-        // 创建终端,获取tid
-        ResponseResult<TerminalResponse> terminalResp = terminalClient.addTerminal(car.getVehicleNo());
+        // 1.先插入car，获取到cid，然后用于终端请求保存desc = cid
+        carMapper.insert(car);
+        // 知识点:插入car时，Mybatis会自动生成一个主键Id,赋值给car对象
+
+        // 创建终端,获取tid和保存desc=cid
+        ResponseResult<TerminalResponse> terminalResp = terminalClient.addTerminal(car.getVehicleNo(), String.valueOf(car.getId()));
         if (!Objects.equals(terminalResp.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
             return ResponseResult.fail(terminalResp.getCode(), terminalResp.getMessage());
         }
@@ -62,10 +66,8 @@ public class CarService {
             car.setTrname(trackRespData.getTrname());
         }
 
-        // 上传轨迹
-
-        // 创建车辆
-        carMapper.insert(car);
+        // 2.更新car
+        carMapper.updateById(car);
 
         return ResponseResult.success("");
     }
@@ -79,4 +81,5 @@ public class CarService {
         }
         return ResponseResult.success(car);
     }
+
 }
