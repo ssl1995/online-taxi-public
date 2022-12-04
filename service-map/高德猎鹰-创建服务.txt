@@ -1,18 +1,21 @@
-{
-	"data": {
-		"name": "飞滴出行service",
-		"sid": 841396
-	},
-	"errcode": 10000,
-	"errdetail": null,
-	"errmsg": "OK"
-}
+key = f7db1c44b0132b46fb2a78cc0f6e25be
 
+创建服务
 {
 	"code": 1,
 	"message": "success",
 	"data": {
 	    "name":"飞滴出行服务",
 		"sid": "839514"
+	}
+}
+
+创建终端
+name = 京N83555
+{
+	"code": 1,
+	"message": "success",
+	"data": {
+		"tid": "607048899"
 	}
 }

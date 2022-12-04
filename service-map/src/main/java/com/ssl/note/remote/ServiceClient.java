@@ -1,6 +1,7 @@
 package com.ssl.note.remote;
 
 import com.ssl.note.constant.AMapConfigConstants;
+import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class ServiceFromMapClient {
+public class ServiceClient {
     @Value("${amap.key}")
     private String aMapKey;
 
@@ -44,7 +45,7 @@ public class ServiceFromMapClient {
         int errCode = (int) bodyJson.get("errcode");
         // 请求失败
         if (!Objects.equals(errCode, AMapConfigConstants.ERROR_CODE_SUCCESS)) {
-            return ResponseResult.fail(errCode, String.valueOf(bodyJson.get("errmsg")));
+            return ResponseResult.fail(CommonStatusEnum.FAIL.getCode(), String.valueOf(bodyJson.get("errmsg")));
         }
         // 请求成功
         JSONObject data = bodyJson.getJSONObject("data");
