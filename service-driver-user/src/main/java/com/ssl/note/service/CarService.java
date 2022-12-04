@@ -4,8 +4,10 @@ import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.Car;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.CarMapper;
+import com.ssl.note.remote.PointClient;
 import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.remote.TrackClient;
+import com.ssl.note.request.PointRequest;
 import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.response.TrackResponse;
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +34,9 @@ public class CarService {
     @Autowired
     private TrackClient trackClient;
 
+    @Autowired
+    private PointClient pointClient;
+
     public ResponseResult<String> saveCar(Car car) {
         LocalDateTime now = LocalDateTime.now();
         car.setGmtCreate(now);
@@ -57,6 +62,8 @@ public class CarService {
         if (StringUtils.isNotBlank(trackRespData.getTrname())) {
             car.setTrname(trackRespData.getTrname());
         }
+
+        // 上传轨迹
 
         // 创建车辆
         carMapper.insert(car);
