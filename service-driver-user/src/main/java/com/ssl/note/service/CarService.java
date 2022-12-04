@@ -5,7 +5,10 @@ import com.ssl.note.dto.Car;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.CarMapper;
 import com.ssl.note.remote.TerminalClient;
+import com.ssl.note.remote.TrackClient;
 import com.ssl.note.response.TerminalResponse;
+import com.ssl.note.response.TrackResponse;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,9 @@ public class CarService {
     @Autowired
     private TerminalClient terminalClient;
 
+    @Autowired
+    private TrackClient trackClient;
+
     public ResponseResult<String> saveCar(Car car) {
         LocalDateTime now = LocalDateTime.now();
         car.setGmtCreate(now);
@@ -39,6 +45,18 @@ public class CarService {
         TerminalResponse terminalRespData = terminalResp.getData();
         String tid = terminalRespData.getTid();
         car.setTid(tid);
+
+        // 创建轨迹，获取trid和trname
+        ResponseResult<TrackResponse> trackResp = trackClient.addTrack(tid);
+        if (!Objects.equals(trackResp.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+            return ResponseResult.fail(trackResp.getCode(), trackResp.getMessage());
+        }
+        TrackResponse trackRespData = trackResp.getData();
+        String trid = trackRespData.getTrid();
+        car.setTrid(trid);
+        if (StringUtils.isNotBlank(trackRespData.getTrname())) {
+            car.setTrname(trackRespData.getTrname());
+        }
 
         // 创建车辆
         carMapper.insert(car);
