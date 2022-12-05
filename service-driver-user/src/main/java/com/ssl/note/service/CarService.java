@@ -4,7 +4,6 @@ import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.Car;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.CarMapper;
-import com.ssl.note.remote.PointClient;
 import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.remote.TrackClient;
 import com.ssl.note.response.TerminalResponse;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Objects;
 
 /**

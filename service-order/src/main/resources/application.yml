@@ -1,0 +1,28 @@
+server:
+  port: 8007
+
+spring:
+  profiles:
+    active: default
+  application:
+    name: service-order
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://rm-2zep5730lmk5s5dy37o.mysql.rds.aliyuncs.com:3306/service-order?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    username: root
+    password: Ssl@199502
+  cloud:
+    nacos:
+      discovery:
+        server-addr: http://101.201.154.144:8848
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include: '*'
+
+# mybatis-plus??sql??
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
