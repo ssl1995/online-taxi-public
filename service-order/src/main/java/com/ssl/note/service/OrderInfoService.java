@@ -4,9 +4,13 @@ import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.OrderInfo;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.OrderInfoMapper;
+import com.ssl.note.request.ApiDriverPointRequest;
+import com.ssl.note.request.OrderRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -19,6 +23,16 @@ public class OrderInfoService {
 
     @Autowired
     private OrderInfoMapper orderInfoMapper;
+
+    public ResponseResult<String> add(OrderRequest orderRequest) {
+        OrderInfo orderInfo = new OrderInfo();
+        BeanUtils.copyProperties(orderRequest, orderInfo);
+        orderInfo.setGmtCreate(LocalDateTime.now());
+        orderInfo.setGmtModified(LocalDateTime.now());
+        orderInfoMapper.insert(orderInfo);
+
+        return ResponseResult.success("");
+    }
 
     public ResponseResult<OrderInfo> getById(Long id) {
         if (Objects.isNull(id)) {

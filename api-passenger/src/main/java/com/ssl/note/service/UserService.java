@@ -47,11 +47,13 @@ public class UserService {
         }
         // 4.封装返回用户昵称和头像
         PassengerUser user = userResponseResult.getData();
-        PassengerUser passengerUser = PassengerUser.builder()
-                .passengerName(user.getPassengerName())
-                .profilePhoto(user.getProfilePhoto())
-                .build();
-        return ResponseResult.success(passengerUser);
+//        PassengerUser passengerUser = PassengerUser.builder()
+//                .id(user.getId())
+//                .passengerPhone(user.getPassengerPhone())
+//                .passengerName(user.getPassengerName())
+//                .profilePhoto(user.getProfilePhoto())
+//                .build();
+        return ResponseResult.success(user);
     }
 
 }
