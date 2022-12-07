@@ -1,17 +1,10 @@
 package com.ssl.note.controller;
 
-import com.alibaba.nacos.common.utils.Objects;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.service.PriceRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @Author: SongShengLin

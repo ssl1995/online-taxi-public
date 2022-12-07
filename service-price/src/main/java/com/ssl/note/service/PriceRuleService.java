@@ -5,7 +5,6 @@ import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.PriceRuleMapper;
-import com.ssl.note.utils.BigDecimalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -13,7 +12,6 @@ import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Wrapper;
 import java.util.List;
 import java.util.Objects;
 
