@@ -1,6 +1,9 @@
 package com.ssl.note.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author: SongShengLin
@@ -8,7 +11,14 @@ import lombok.Data;
  * @Describe:
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ForecastPriceResponse {
 
     private Double price;
+
+    private String cityCode;
+
+    private String vehicleType;
 }

@@ -23,12 +23,14 @@ public class ForecastPriceService {
     /**
      * 获取预估价格
      */
-    public ResponseResult<ForecastPriceResponse> forecastPrice(String depLongitude, String depLatitude, String destLongitude, String destLatitude) {
+    public ResponseResult<ForecastPriceResponse> forecastPrice(String depLongitude, String depLatitude, String destLongitude, String destLatitude, String cityCode, String vehicleType) {
         ForecastPriceDTO req = ForecastPriceDTO.builder()
                 .depLongitude(depLongitude)
                 .depLatitude(depLatitude)
                 .destLongitude(destLongitude)
                 .destLatitude(destLatitude)
+                .cityCode(cityCode)
+                .vehicleType(vehicleType)
                 .build();
 
         return servicePriceClient.forecastPrice(req);
