@@ -1,6 +1,7 @@
 package com.ssl.note.utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * @Author: SongShengLin
@@ -28,7 +29,7 @@ public class BigDecimalUtils {
         }
         BigDecimal b1 = BigDecimal.valueOf(d1);
         BigDecimal b2 = BigDecimal.valueOf(d2);
-        return b1.divide(b2, 2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return b1.divide(b2, 2, RoundingMode.HALF_UP).doubleValue();
     }
 
     /**
@@ -37,7 +38,7 @@ public class BigDecimalUtils {
     public static double multiply(double d1, double d2) {
         BigDecimal b1 = BigDecimal.valueOf(d1);
         BigDecimal b2 = BigDecimal.valueOf(d2);
-        return b1.multiply(b2).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+        return b1.multiply(b2).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     /**
