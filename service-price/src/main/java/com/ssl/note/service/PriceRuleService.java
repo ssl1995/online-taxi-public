@@ -107,7 +107,7 @@ public class PriceRuleService {
 
     public ResponseResult<Boolean> isNew(String fareType, Integer fareVersion) {
         ResponseResult<PriceRule> priceRulesResp = getNewestVersion(fareType);
-        if (!com.alibaba.nacos.common.utils.Objects.equals(priceRulesResp.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+        if (!Objects.equals(priceRulesResp.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
             return ResponseResult.fail(priceRulesResp.getCode(), priceRulesResp.getMessage());
         }
         PriceRule priceRule = priceRulesResp.getData();
