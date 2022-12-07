@@ -9,6 +9,7 @@ import com.ssl.note.utils.BigDecimalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -90,6 +91,31 @@ public class PriceRuleService {
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
+    }
+
+
+    public ResponseResult<PriceRule> getNewestVersion(String fareType) {
+        QueryWrapper<PriceRule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("fare_type", fareType);
+        queryWrapper.orderByDesc("fare_version");
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
+        if (CollectionUtils.isEmpty(priceRules)) {
+            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_EMPTY.getCode(), CommonStatusEnum.PRICE_RULE_EMPTY.getMessage());
+        }
+        return ResponseResult.success(priceRules.get(0));
+    }
+
+    public ResponseResult<Boolean> isNew(String fareType, Integer fareVersion) {
+        ResponseResult<PriceRule> priceRulesResp = getNewestVersion(fareType);
+        if (!com.alibaba.nacos.common.utils.Objects.equals(priceRulesResp.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+            return ResponseResult.fail(priceRulesResp.getCode(), priceRulesResp.getMessage());
+        }
+        PriceRule priceRule = priceRulesResp.getData();
+        Integer fareVersionDB = priceRule.getFareVersion();
+        if (ObjectUtils.isEmpty(fareVersionDB) || fareVersion < fareVersionDB) {
+            return ResponseResult.success(Boolean.FALSE);
+        }
+        return ResponseResult.success(Boolean.TRUE);
     }
 
 }
