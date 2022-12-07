@@ -49,5 +49,4 @@ public class BigDecimalUtils {
         return b1.subtract(b2).doubleValue();
     }
 
-
 }
