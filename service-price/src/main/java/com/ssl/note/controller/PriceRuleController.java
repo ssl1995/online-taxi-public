@@ -38,4 +38,8 @@ public class PriceRuleController {
         return priceRuleService.isNew(fareType, fareVersion);
     }
 
+    @GetMapping("/is-exists")
+    public ResponseResult<Boolean> isExists(@RequestBody PriceRule priceRule) {
+        return priceRuleService.isExists(priceRule);
+    }
 }
