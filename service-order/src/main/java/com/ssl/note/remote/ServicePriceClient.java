@@ -1,8 +1,10 @@
 package com.ssl.note.remote;
 
+import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -15,4 +17,7 @@ public interface ServicePriceClient {
 
     @GetMapping("/price-rule/is-new")
     ResponseResult<Boolean> isNew(@RequestParam("fareType") String fareType, @RequestParam("fareVersion") Integer fareVersion);
+
+    @GetMapping("/price-rule/is-exists")
+    ResponseResult<Boolean> isExists(@RequestBody PriceRule priceRule);
 }

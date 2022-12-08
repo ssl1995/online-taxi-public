@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.constant.OrderConstants;
 import com.ssl.note.dto.OrderInfo;
+import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.OrderInfoMapper;
 import com.ssl.note.remote.ServicePriceClient;
@@ -36,22 +37,25 @@ public class OrderInfoService {
     private StringRedisTemplate stringRedisTemplate;
 
     public ResponseResult<String> add(OrderRequest orderRequest) {
-        // 检查计价规则是否发生变化
-        ResponseResult<Boolean> isNewResp = servicePriceClient.isNew(orderRequest.getFareType(), orderRequest.getFareVersion());
-        if (!Objects.equals(isNewResp.getCode(), CommonStatusEnum.SUCCESS.getCode()) || !isNewResp.getData()) {
+        // 检查:计价规则是否发生变化
+        if (!isNewFareTypeAndVersion(orderRequest.getFareType(),orderRequest.getFareVersion())) {
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(), CommonStatusEnum.PRICE_RULE_CHANGED.getMessage());
         }
 
-        // 检查是否命中黑名单
+        // 检查:是否命中黑名单
         if (isBlackDevice(orderRequest.getDeviceCode())) {
             return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(), CommonStatusEnum.DEVICE_IS_BLACK.getMessage());
         }
 
-        // 检查乘客是否有进行中的订单
+        // 检查:下单的城市和计价规则是否正常
+        if (!isPriceRuleExists(orderRequest.getFareType())) {
+            return ResponseResult.fail(CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getCode(), CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getMessage());
+        }
+
+        // 检查:乘客是否有进行中的订单
         if ((isPassengerOrderGoingOn(orderRequest.getPassengerId())) > 0) {
             return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(), CommonStatusEnum.ORDER_GOING_ON.getMessage());
         }
-
 
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderRequest, orderInfo);
@@ -60,6 +64,19 @@ public class OrderInfoService {
         orderInfoMapper.insert(orderInfo);
 
         return ResponseResult.success("");
+    }
+
+    private boolean isPriceRuleExists(String fareType) {
+        int index = fareType.indexOf("$");
+        String cityCode = fareType.substring(0, index);
+        String vehicleType = fareType.substring(index);
+
+        PriceRule priceRule = PriceRule.builder().cityCode(cityCode).vehicleType(vehicleType).build();
+        ResponseResult<Boolean> isExists = servicePriceClient.isExists(priceRule);
+        if (!Objects.equals(isExists.getCode(), CommonStatusEnum.SUCCESS.getCode()) || !isExists.getData()) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 
     private boolean isBlackDevice(String deviceCode) {
@@ -98,6 +115,14 @@ public class OrderInfoService {
         );
 
         return orderInfoMapper.selectCount(queryWrapper);
+    }
+
+    private boolean isNewFareTypeAndVersion(String fareType, Integer fareVersion) {
+        ResponseResult<Boolean> isNewResp = servicePriceClient.isNew(fareType, fareVersion);
+        if (!Objects.equals(isNewResp.getCode(), CommonStatusEnum.SUCCESS.getCode()) || !isNewResp.getData()) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 
 
