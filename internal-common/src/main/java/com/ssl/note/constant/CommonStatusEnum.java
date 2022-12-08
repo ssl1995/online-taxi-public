@@ -85,6 +85,11 @@ public enum CommonStatusEnum {
 
     ORDER_CANCEL_ERROR(1603, "订单取消失败"),
 
+    /**
+     * 参数错误
+     */
+    PARAM_ERROR(3000, "请求参数错误"),
+
     ;
     private Integer code;
     private String message;

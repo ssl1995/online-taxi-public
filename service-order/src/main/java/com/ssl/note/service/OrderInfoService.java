@@ -7,9 +7,11 @@ import com.ssl.note.dto.OrderInfo;
 import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.OrderInfoMapper;
+import com.ssl.note.remote.CityDriverUserClient;
 import com.ssl.note.remote.ServicePriceClient;
 import com.ssl.note.request.OrderRequest;
 import com.ssl.note.utils.RedisPrefixUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @Describe:
  */
 @Service
+@Slf4j
 public class OrderInfoService {
 
     @Autowired
@@ -36,9 +39,17 @@ public class OrderInfoService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private CityDriverUserClient cityDriverUserClient;
+
     public ResponseResult<String> add(OrderRequest orderRequest) {
+        // 检查：当前城市是否有司机
+        if (!isAvailableDriver(orderRequest.getAddress())) {
+            return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(), CommonStatusEnum.CITY_DRIVER_EMPTY.getMessage());
+        }
+
         // 检查:计价规则是否发生变化
-        if (!isNewFareTypeAndVersion(orderRequest.getFareType(),orderRequest.getFareVersion())) {
+        if (!isNewFareTypeAndVersion(orderRequest.getFareType(), orderRequest.getFareVersion())) {
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(), CommonStatusEnum.PRICE_RULE_CHANGED.getMessage());
         }
 
@@ -65,6 +76,16 @@ public class OrderInfoService {
 
         return ResponseResult.success("");
     }
+
+    private boolean isAvailableDriver(String cityCode) {
+        ResponseResult<Boolean> isAvailableDriver = cityDriverUserClient.isAvailableDriver(cityCode);
+        if (Objects.isNull(isAvailableDriver) || !Objects.equals(isAvailableDriver.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+            log.error("isAvailableDriver为空！");
+            return Boolean.FALSE;
+        }
+        return isAvailableDriver.getData();
+    }
+
 
     private boolean isPriceRuleExists(String fareType) {
         int index = fareType.indexOf("$");
