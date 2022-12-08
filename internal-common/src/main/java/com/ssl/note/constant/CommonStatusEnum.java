@@ -70,6 +70,21 @@ public enum CommonStatusEnum {
     CITY_DRIVER_EMPTY(1505, "当前城市没有可用的司机"),
 
     AVAILABLE_DRIVER_EMPTY(1506, "可用的司机为空"),
+
+    /**
+     * 订单：1600-1699
+     */
+    ORDER_GOING_ON(1600,"有正在进行的订单"),
+
+    /**
+     * 下单异常
+     */
+    DEVICE_IS_BLACK(1601,"拒绝下单,该设备超过下单次数"),
+
+    CITY_SERVICE_NOT_SERVICE(1602,"当前城市不提供叫车服务"),
+
+    ORDER_CANCEL_ERROR(1603, "订单取消失败"),
+
     ;
     private Integer code;
     private String message;

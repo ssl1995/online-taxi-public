@@ -9,6 +9,7 @@ public class RedisPrefixUtils {
 
     public static final String VERIFICATION_CODE_PREFIX = "verification-code-";
     public static final String TOKEN_PREFIX = "token-";
+    public static final String BLACK_DEVICE_CODE_PREFIX = "device-code-";
 
     /**
      * 根据手机号生成redis的key
