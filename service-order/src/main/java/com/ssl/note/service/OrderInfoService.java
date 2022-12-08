@@ -53,11 +53,11 @@ public class OrderInfoService {
         }
 
 
-//        OrderInfo orderInfo = new OrderInfo();
-//        BeanUtils.copyProperties(orderRequest, orderInfo);
-//        orderInfo.setGmtCreate(LocalDateTime.now());
-//        orderInfo.setGmtModified(LocalDateTime.now());
-//        orderInfoMapper.insert(orderInfo);
+        OrderInfo orderInfo = new OrderInfo();
+        BeanUtils.copyProperties(orderRequest, orderInfo);
+        orderInfo.setGmtCreate(LocalDateTime.now());
+        orderInfo.setGmtModified(LocalDateTime.now());
+        orderInfoMapper.insert(orderInfo);
 
         return ResponseResult.success("");
     }
