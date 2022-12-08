@@ -69,8 +69,8 @@ public class OrderInfoService {
             String countStr = stringRedisTemplate.opsForValue().get(key);
             assert countStr != null;
             int count = Integer.parseInt(countStr);
-            // 次数大于2就是命中黑名单
-            if (count > 2) {
+            // 次数>=2就是命中黑名单
+            if (count >= 2) {
                 return Boolean.TRUE;
             } else {
                 stringRedisTemplate.opsForValue().increment(key);
