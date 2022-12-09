@@ -98,7 +98,7 @@ public class TerminalClient {
             TerminalResponse terminalResponse = new TerminalResponse();
 
             JSONObject jsonObject = results.getJSONObject(i);
-            // desc是carId
+            // desc是carId，不能出错。Json.getLong是会出现经度丢失的，先使用getString再转换为Long
             String desc = jsonObject.getString("desc");
             Long carId = !StringUtils.equals(desc,"null") ? Long.parseLong(desc) : null;
             String tid = jsonObject.getString("tid");
