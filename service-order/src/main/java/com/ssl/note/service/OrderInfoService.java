@@ -1,6 +1,7 @@
 package com.ssl.note.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.constant.OrderConstants;
 import com.ssl.note.dto.OrderInfo;
@@ -9,15 +10,19 @@ import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.OrderInfoMapper;
 import com.ssl.note.remote.CityDriverUserClient;
 import com.ssl.note.remote.ServicePriceClient;
+import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.request.OrderRequest;
+import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.utils.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONArray;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +46,9 @@ public class OrderInfoService {
 
     @Autowired
     private CityDriverUserClient cityDriverUserClient;
+
+    @Autowired
+    private TerminalClient terminalClient;
 
     public ResponseResult<String> add(OrderRequest orderRequest) {
         // 检查：当前城市是否有司机
@@ -68,13 +76,45 @@ public class OrderInfoService {
             return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(), CommonStatusEnum.ORDER_GOING_ON.getMessage());
         }
 
+        // 保存订单
+        saveOrder(orderRequest);
+
+        // 分配订单
+        dispatchRealTimeOrder(orderRequest);
+
+        return ResponseResult.success("");
+    }
+
+
+    /**
+     * 保存订单成功后，分配订单
+     */
+    public int dispatchRealTimeOrder(OrderRequest orderRequest) {
+        // 目的地纬度
+        String depLatitude = orderRequest.getDepLatitude();
+        // 目的地经度
+        String depLongitude = orderRequest.getDepLongitude();
+
+        // 获取附近终端信息
+        String center = depLatitude + "," + depLongitude;
+        String radius = null;
+        List<String> radiusList = Lists.newArrayList("2000", "4000", "5000");
+        ResponseResult<List<TerminalResponse>> terminalResp = null;
+        for (int i = 0; i < radiusList.size(); i++) {
+            radius = radiusList.get(i);
+            terminalResp = terminalClient.aroundSearch(center, radius);
+            log.info("在半径为" + radius + "的范围内，寻找车辆,结果：" + JSONArray.fromObject(terminalResp.getData()).toString());
+        }
+        return 1;
+    }
+
+    private void saveOrder(OrderRequest orderRequest) {
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderRequest, orderInfo);
         orderInfo.setGmtCreate(LocalDateTime.now());
         orderInfo.setGmtModified(LocalDateTime.now());
+        // 保存订单
         orderInfoMapper.insert(orderInfo);
-
-        return ResponseResult.success("");
     }
 
     private boolean isAvailableDriver(String cityCode) {
