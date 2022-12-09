@@ -46,6 +46,7 @@ public class CarService {
         // 创建终端,获取tid和保存desc=cid
         ResponseResult<TerminalResponse> terminalResp = terminalClient.addTerminal(car.getVehicleNo(), String.valueOf(car.getId()));
         if (!Objects.equals(terminalResp.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+            carMapper.deleteById(car);
             return ResponseResult.fail(terminalResp.getCode(), terminalResp.getMessage());
         }
         TerminalResponse terminalRespData = terminalResp.getData();
@@ -55,6 +56,7 @@ public class CarService {
         // 创建轨迹，获取trid和trname
         ResponseResult<TrackResponse> trackResp = trackClient.addTrack(tid);
         if (!Objects.equals(trackResp.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+            carMapper.deleteById(car);
             return ResponseResult.fail(trackResp.getCode(), trackResp.getMessage());
         }
         TrackResponse trackRespData = trackResp.getData();
