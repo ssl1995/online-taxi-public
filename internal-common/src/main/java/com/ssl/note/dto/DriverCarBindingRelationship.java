@@ -23,6 +23,9 @@ public class DriverCarBindingRelationship implements Serializable {
 
     private Long carId;
 
+    /**
+     * 绑定状态：1：绑定，2：解绑
+     */
     private Integer bindState;
 
     private LocalDateTime bindingTime;

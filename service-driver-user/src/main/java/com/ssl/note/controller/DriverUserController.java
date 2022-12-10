@@ -4,6 +4,7 @@ import com.ssl.note.constant.DriverCarConstants;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.DriverUserExistsResponse;
+import com.ssl.note.response.OrderDriverResponse;
 import com.ssl.note.service.DriverUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,11 @@ public class DriverUserController {
         resp.setIfExists(DriverCarConstants.DRIVER_EXISTS);
         resp.setDriverPhone(driverUserResp.getData().getDriverPhone());
         return ResponseResult.success(resp);
+    }
+
+    @GetMapping("/get-available-driver/{carId}")
+    public ResponseResult<OrderDriverResponse> getAvailableDriverByCarId(@PathVariable("carId") Long carId) {
+        return driverUserService.getAvailableDriverByCarId(carId);
     }
 
 

@@ -103,7 +103,9 @@ public class OrderInfoService {
         for (int i = 0; i < radiusList.size(); i++) {
             radius = radiusList.get(i);
             terminalResp = terminalClient.aroundSearch(center, radius);
+            // [{"carId":1601122702212026369,"latitude":"40.007473","longitude":"116.34769","tid":"609120858"}]
             log.info("在半径为" + radius + "的范围内，寻找车辆,结果：" + JSONArray.fromObject(terminalResp.getData()).toString());
+
         }
         return 1;
     }

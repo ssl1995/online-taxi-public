@@ -51,4 +51,10 @@ public class ResponseResult<T> {
                 .setMessage(message)
                 .setData(data);
     }
+
+    public static <T> ResponseResult<T> fail(CommonStatusEnum commonStatusEnum) {
+        return new ResponseResult<T>()
+                .setCode(commonStatusEnum.getCode())
+                .setMessage(commonStatusEnum.getMessage());
+    }
 }

@@ -8,12 +8,12 @@ package com.ssl.note.constant;
 public class DriverCarConstants {
 
     /**
-     * 绑定车辆
+     * DriverCarBindingRelationship:绑定车辆
      */
     public static final Integer DRIVER_CAR_BIND = 1;
 
     /**
-     * 解绑车辆
+     * DriverCarBindingRelationship:解绑车辆
      */
     public static final Integer DRIVER_CAR_UNBIND = 2;
 
@@ -40,7 +40,7 @@ public class DriverCarConstants {
 
 
     /**
-     * 司机工作状态：0=收车
+     * driverUserWorkStatus：司机工作状态：0=收车
      */
     public static final Integer DRIVER_WORK_STATUS_STOP = 0;
 

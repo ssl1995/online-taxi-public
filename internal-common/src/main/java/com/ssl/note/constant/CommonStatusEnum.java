@@ -90,6 +90,8 @@ public enum CommonStatusEnum {
      */
     PARAM_ERROR(3000, "请求参数错误"),
 
+    PARAM_EMPTY_ERROR(3001, "请求参数不能为空"),
+
     ;
     private Integer code;
     private String message;
