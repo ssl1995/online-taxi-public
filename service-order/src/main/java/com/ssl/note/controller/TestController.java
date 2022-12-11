@@ -6,6 +6,7 @@ import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.service.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -27,6 +28,9 @@ public class TestController {
     @Autowired
     private OrderInfoMapper orderInfoMapper;
 
+    @Value("${server.port}")
+    private String port;
+
     @PostMapping("/order/add/terminal")
     public String orderAddTerminalTest(@RequestBody OrderInfo OrderInfo) {
         orderInfoService.dispatchRealTimeOrder(OrderInfo);
@@ -35,7 +39,7 @@ public class TestController {
 
     @GetMapping("/order/add/{orderId}")
     public String orderAddTerminalTest(@PathVariable("orderId") Long orderId) {
-        log.info("orderId:{}", orderId);
+        log.info("service-order服务,端口:{},接收到orderId:{}", port, orderId);
         OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
         orderInfoService.dispatchRealTimeOrder(orderInfo);
         return "real-test-order-add success";

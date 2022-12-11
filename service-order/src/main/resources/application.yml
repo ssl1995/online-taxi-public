@@ -31,3 +31,15 @@ management:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+---
+server:
+  port: 8008
+spring:
+  profiles: 8008
+
+---
+server:
+  port: 8007
+spring:
+  profiles: 8007

@@ -53,6 +53,8 @@ public class OrderInfoService {
     @Autowired
     private TerminalClient terminalClient;
 
+    public static final String lock = "lock";
+
     public ResponseResult<String> add(OrderRequest orderRequest) {
         // 检查：当前城市是否有司机
         if (!isAvailableDriver(orderRequest.getAddress())) {
