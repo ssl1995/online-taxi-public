@@ -80,10 +80,14 @@ public class OrderInfoService {
         }
 
         // 保存订单
-        saveOrder(orderRequest);
+        OrderInfo orderInfo = new OrderInfo();
+        BeanUtils.copyProperties(orderRequest, orderInfo);
+        orderInfo.setGmtCreate(LocalDateTime.now());
+        orderInfo.setGmtModified(LocalDateTime.now());
+        orderInfoMapper.insert(orderInfo);
 
-        // 分配订单
-        dispatchRealTimeOrder(orderRequest);
+        // 分配订单，并更新订单
+        dispatchRealTimeOrder(orderInfo);
 
         return ResponseResult.success("");
     }
@@ -92,11 +96,11 @@ public class OrderInfoService {
     /**
      * 保存订单成功后，分配订单
      */
-    public int dispatchRealTimeOrder(OrderRequest orderRequest) {
+    public int dispatchRealTimeOrder(OrderInfo orderInfo) {
         // 目的地纬度
-        String depLatitude = orderRequest.getDepLatitude();
+        String depLatitude = orderInfo.getDepLatitude();
         // 目的地经度
-        String depLongitude = orderRequest.getDepLongitude();
+        String depLongitude = orderInfo.getDepLongitude();
 
         // 获取附近终端信息
         String center = depLatitude + "," + depLongitude;
@@ -117,6 +121,9 @@ public class OrderInfoService {
 
             for (TerminalResponse terminalResponse : terminalResponses) {
                 Long carId = terminalResponse.getCarId();
+                String terminalLongitude = terminalResponse.getLongitude();
+                String TerminalLatitude = terminalResponse.getLatitude();
+
                 // 获取有效司机车辆信息
                 ResponseResult<OrderDriverResponse> orderDriverResp = cityDriverUserClient.getAvailableDriverByCarId(carId);
                 if (Objects.equals(orderDriverResp.getCode(), CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getCode())) {
@@ -135,29 +142,44 @@ public class OrderInfoService {
 
                 String driverPhone = orderDriver.getDriverPhone();
                 String vehicleNo = orderDriver.getVehicleNo();
-                String vehicleType = orderDriver.getVehicleType();
+                String licenseId = orderDriver.getLicenseId();
+                String vehicleTypeByCar = orderDriver.getVehicleType();
+
+                // 判断订单车型与终端绑定CarId是否匹配
+                if (!orderInfo.getVehicleType().trim().equals(vehicleTypeByCar.trim())) {
+                    log.info("当前订单的车辆类型:{},与终端carId:【{}】绑定的车辆类型:{}不匹配！", orderInfo.getVehicleType(), carId, vehicleTypeByCar);
+                    continue;
+                }
+
+                // 更新订单信息
+                // 设置订单中和司机车辆相关的信息
+                orderInfo.setCarId(carId);
+                orderInfo.setDriverPhone(driverPhone);
+                orderInfo.setDriverId(driverId);
+                orderInfo.setLicenseId(licenseId);
+                orderInfo.setVehicleNo(vehicleNo);
+                // 从地图中终端获取
+                orderInfo.setReceiveOrderCarLongitude(terminalLongitude);
+                orderInfo.setReceiveOrderCarLatitude(TerminalLatitude);
+
+                orderInfo.setReceiveOrderTime(LocalDateTime.now());
+                orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
+
+                orderInfoMapper.updateById(orderInfo);
             }
         }
         return 1;
     }
 
-    private void saveOrder(OrderRequest orderRequest) {
-        OrderInfo orderInfo = new OrderInfo();
-        BeanUtils.copyProperties(orderRequest, orderInfo);
-        orderInfo.setGmtCreate(LocalDateTime.now());
-        orderInfo.setGmtModified(LocalDateTime.now());
-        // 保存订单
-        orderInfoMapper.insert(orderInfo);
-    }
-
     private boolean isDriverOrderGoingOn(Long driverId) {
         // 司机接单状态为2-5表示上一单正在继续中
         return new LambdaQueryChainWrapper<>(orderInfoMapper)
-                .eq(OrderInfo::getDriverId, driverId).and(wrapper ->
-                        wrapper.eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_RECEIVE_ORDER)
-                                .or().eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_ARRIVED_DEPARTURE)
-                                .or().eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_ARRIVED_DEPARTURE)
-                                .or().eq(OrderInfo::getOrderStatus, OrderConstants.PICK_UP_PASSENGER)
+                .eq(OrderInfo::getDriverId, driverId)
+                .and(wrapper -> wrapper
+                        .eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_RECEIVE_ORDER)
+                        .or().eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_ARRIVED_DEPARTURE)
+                        .or().eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_ARRIVED_DEPARTURE)
+                        .or().eq(OrderInfo::getOrderStatus, OrderConstants.PICK_UP_PASSENGER)
                 ).count() > 0;
     }
 

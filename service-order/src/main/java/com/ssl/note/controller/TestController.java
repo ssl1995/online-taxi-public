@@ -1,7 +1,7 @@
 package com.ssl.note.controller;
 
+import com.ssl.note.dto.OrderInfo;
 import com.ssl.note.remote.TerminalClient;
-import com.ssl.note.request.OrderRequest;
 import com.ssl.note.service.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +25,7 @@ public class TestController {
     private OrderInfoService orderInfoService;
 
     @PostMapping("/order/add/terminal")
-    public int orderAddTerminalTest(@RequestBody OrderRequest orderRequest) {
-        return orderInfoService.dispatchRealTimeOrder(orderRequest);
+    public int orderAddTerminalTest(@RequestBody OrderInfo OrderInfo) {
+        return orderInfoService.dispatchRealTimeOrder(OrderInfo);
     }
 }

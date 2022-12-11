@@ -1,5 +1,6 @@
 package com.ssl.note.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -56,11 +57,13 @@ public class OrderInfo implements Serializable {
     /**
      * 订单发起时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderTime;
 
     /**
      * 预计用车时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime departTime;
 
     /**
@@ -118,6 +121,7 @@ public class OrderInfo implements Serializable {
     /**
      * 接单时间，派单成功时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime receiveOrderTime;
 
     /**
@@ -133,6 +137,7 @@ public class OrderInfo implements Serializable {
     /**
      * 司机去接乘客出发时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime toPickUpPassengerTime;
 
     /**
@@ -153,11 +158,13 @@ public class OrderInfo implements Serializable {
     /**
      * 司机到达上车点时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime driverArrivedDepartureTime;
 
     /**
      * 接到乘客，乘客上车时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime pickUpPassengerTime;
 
     /**
@@ -173,6 +180,7 @@ public class OrderInfo implements Serializable {
     /**
      * 乘客下车时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime passengerGetoffTime;
 
     /**
@@ -188,6 +196,7 @@ public class OrderInfo implements Serializable {
     /**
      * 订单撤销时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime cancelTime;
 
     /**
@@ -220,10 +229,12 @@ public class OrderInfo implements Serializable {
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime gmtCreate;
 
     /**
      * 修改时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime gmtModified;
 }
