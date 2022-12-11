@@ -1,6 +1,7 @@
 package com.ssl.note.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.google.common.collect.Lists;
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.constant.OrderConstants;
@@ -125,6 +126,13 @@ public class OrderInfoService {
                 OrderDriverResponse orderDriver = orderDriverResp.getData();
                 log.info("orderDriver:{}", orderDriver);
                 Long driverId = orderDriver.getDriverId();
+
+                // 检查：订单表中该司机是否还有进行中的订单
+                if (isDriverOrderGoingOn(driverId)) {
+                    log.info("车辆Id:{},司机Id:{},上一单还在继续中，无法接单", carId, driverId);
+                    continue;
+                }
+
                 String driverPhone = orderDriver.getDriverPhone();
                 String vehicleNo = orderDriver.getVehicleNo();
                 String vehicleType = orderDriver.getVehicleType();
@@ -140,6 +148,17 @@ public class OrderInfoService {
         orderInfo.setGmtModified(LocalDateTime.now());
         // 保存订单
         orderInfoMapper.insert(orderInfo);
+    }
+
+    private boolean isDriverOrderGoingOn(Long driverId) {
+        // 司机接单状态为2-5表示上一单正在继续中
+        return new LambdaQueryChainWrapper<>(orderInfoMapper)
+                .eq(OrderInfo::getDriverId, driverId).and(wrapper ->
+                        wrapper.eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_RECEIVE_ORDER)
+                                .or().eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_ARRIVED_DEPARTURE)
+                                .or().eq(OrderInfo::getOrderStatus, OrderConstants.DRIVER_ARRIVED_DEPARTURE)
+                                .or().eq(OrderInfo::getOrderStatus, OrderConstants.PICK_UP_PASSENGER)
+                ).count() > 0;
     }
 
     private boolean isAvailableDriver(String cityCode) {
