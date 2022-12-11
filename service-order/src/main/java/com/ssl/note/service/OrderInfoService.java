@@ -101,7 +101,7 @@ public class OrderInfoService {
     /**
      * 保存订单成功后，分配订单
      */
-    public synchronized void dispatchRealTimeOrder(OrderInfo orderInfo) {
+    public void dispatchRealTimeOrder(OrderInfo orderInfo) {
         // 目的地纬度
         String depLatitude = orderInfo.getDepLatitude();
         // 目的地经度
@@ -152,8 +152,6 @@ public class OrderInfoService {
                     // 检查：订单表中该司机是否还有进行中的订单
                     if (isDriverOrderGoingOn(driverId)) {
                         log.info("车辆Id:{},司机Id:{},上一单还在继续中，无法接单", carId, driverId);
-                        // 跳出循环也要解锁
-                        lock.unlock();
                         continue;
                     }
 
@@ -184,13 +182,12 @@ public class OrderInfoService {
 
                     orderInfoMapper.updateById(orderInfo);
 
-                    // 解锁
-                    lock.unlock();
                     // 一旦有1个司机接单，外层循环也一起结束
                     break radius;
                 } finally {
                     // 问题：避免解锁太快，把别人给解锁了
                     if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+                        // 解锁统一放在finally里
                         lock.unlock();
                     }
                 }
