@@ -19,6 +19,8 @@ import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.utils.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -53,7 +55,8 @@ public class OrderInfoService {
     @Autowired
     private TerminalClient terminalClient;
 
-    public static final String lock = "lock";
+    @Autowired
+    private RedissonClient redissonClient;
 
     public ResponseResult<String> add(OrderRequest orderRequest) {
         // 检查：当前城市是否有司机
@@ -138,41 +141,59 @@ public class OrderInfoService {
                 log.info("orderDriver:{}", orderDriver);
                 Long driverId = orderDriver.getDriverId();
 
-                // 检查：订单表中该司机是否还有进行中的订单
-                if (isDriverOrderGoingOn(driverId)) {
-                    log.info("车辆Id:{},司机Id:{},上一单还在继续中，无法接单", carId, driverId);
-                    continue;
+                // 使用redisson分布式锁
+                String lockKey = String.valueOf(driverId).intern();
+                RLock lock = redissonClient.getLock(lockKey);
+
+                try {
+                    // 加锁
+                    lock.lock();
+
+                    // 检查：订单表中该司机是否还有进行中的订单
+                    if (isDriverOrderGoingOn(driverId)) {
+                        log.info("车辆Id:{},司机Id:{},上一单还在继续中，无法接单", carId, driverId);
+                        // 跳出循环也要解锁
+                        lock.unlock();
+                        continue;
+                    }
+
+                    String driverPhone = orderDriver.getDriverPhone();
+                    String vehicleNo = orderDriver.getVehicleNo();
+                    String licenseId = orderDriver.getLicenseId();
+                    String vehicleTypeByCar = orderDriver.getVehicleType();
+
+                    // 判断订单车型与终端绑定CarId是否匹配
+                    if (!orderInfo.getVehicleType().trim().equals(vehicleTypeByCar.trim())) {
+                        log.info("当前订单的车辆类型:{},与终端carId:【{}】绑定的车辆类型:{}不匹配！", orderInfo.getVehicleType(), carId, vehicleTypeByCar);
+                        continue;
+                    }
+
+                    // 更新订单信息
+                    // 设置订单中和司机车辆相关的信息
+                    orderInfo.setCarId(carId);
+                    orderInfo.setDriverPhone(driverPhone);
+                    orderInfo.setDriverId(driverId);
+                    orderInfo.setLicenseId(licenseId);
+                    orderInfo.setVehicleNo(vehicleNo);
+                    // 从地图中终端获取
+                    orderInfo.setReceiveOrderCarLongitude(terminalLongitude);
+                    orderInfo.setReceiveOrderCarLatitude(TerminalLatitude);
+
+                    orderInfo.setReceiveOrderTime(LocalDateTime.now());
+                    orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
+
+                    orderInfoMapper.updateById(orderInfo);
+
+                    // 解锁
+                    lock.unlock();
+                    // 一旦有1个司机接单，外层循环也一起结束
+                    break radius;
+                } finally {
+                    // 问题：避免解锁太快，把别人给解锁了
+                    if (lock.isLocked() && lock.isHeldByCurrentThread()) {
+                        lock.unlock();
+                    }
                 }
-
-                String driverPhone = orderDriver.getDriverPhone();
-                String vehicleNo = orderDriver.getVehicleNo();
-                String licenseId = orderDriver.getLicenseId();
-                String vehicleTypeByCar = orderDriver.getVehicleType();
-
-                // 判断订单车型与终端绑定CarId是否匹配
-                if (!orderInfo.getVehicleType().trim().equals(vehicleTypeByCar.trim())) {
-                    log.info("当前订单的车辆类型:{},与终端carId:【{}】绑定的车辆类型:{}不匹配！", orderInfo.getVehicleType(), carId, vehicleTypeByCar);
-                    continue;
-                }
-
-                // 更新订单信息
-                // 设置订单中和司机车辆相关的信息
-                orderInfo.setCarId(carId);
-                orderInfo.setDriverPhone(driverPhone);
-                orderInfo.setDriverId(driverId);
-                orderInfo.setLicenseId(licenseId);
-                orderInfo.setVehicleNo(vehicleNo);
-                // 从地图中终端获取
-                orderInfo.setReceiveOrderCarLongitude(terminalLongitude);
-                orderInfo.setReceiveOrderCarLatitude(TerminalLatitude);
-
-                orderInfo.setReceiveOrderTime(LocalDateTime.now());
-                orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
-
-                orderInfoMapper.updateById(orderInfo);
-
-                // 一旦有1个司机接单，外层循环也一起结束
-                break radius;
             }
         }
     }
