@@ -13,6 +13,7 @@ import com.ssl.note.remote.ServicePriceClient;
 import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.request.OrderRequest;
 import com.ssl.note.request.PriceRuleIsNewRequest;
+import com.ssl.note.response.OrderDriverResponse;
 import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.utils.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -101,12 +102,33 @@ public class OrderInfoService {
         String radius = null;
         List<String> radiusList = Lists.newArrayList("2000", "4000", "5000");
         ResponseResult<List<TerminalResponse>> terminalResp = null;
+
         for (int i = 0; i < radiusList.size(); i++) {
             radius = radiusList.get(i);
+            // 搜索周边终端
             terminalResp = terminalClient.aroundSearch(center, radius);
-            // [{"carId":1601122702212026369,"latitude":"40.007473","longitude":"116.34769","tid":"609120858"}]
             log.info("在半径为" + radius + "的范围内，寻找车辆,结果：" + JSONArray.fromObject(terminalResp.getData()).toString());
+            if (Objects.isNull(terminalResp.getData())) {
+                continue;
+            }
+            // [{"carId":1601122702212026369,"latitude":"40.007473","longitude":"116.34769","tid":"609120858"}]
+            List<TerminalResponse> terminalResponses = terminalResp.getData();
 
+            for (TerminalResponse terminalResponse : terminalResponses) {
+                Long carId = terminalResponse.getCarId();
+                // 获取有效司机车辆信息
+                ResponseResult<OrderDriverResponse> orderDriverResp = cityDriverUserClient.getAvailableDriverByCarId(carId);
+                if (Objects.equals(orderDriverResp.getCode(), CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getCode())) {
+                    log.info("没有车辆ID：" + carId + ",对于的司机");
+                    continue;
+                }
+                OrderDriverResponse orderDriver = orderDriverResp.getData();
+                log.info("orderDriver:{}", orderDriver);
+                Long driverId = orderDriver.getDriverId();
+                String driverPhone = orderDriver.getDriverPhone();
+                String vehicleNo = orderDriver.getVehicleNo();
+                String vehicleType = orderDriver.getVehicleType();
+            }
         }
         return 1;
     }

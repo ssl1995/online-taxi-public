@@ -11,10 +11,18 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OrderDriverResponse {
 
+    /**
+     * 司机Id
+     */
     private Long driverId;
-
+    /**
+     * 司机手机号
+     */
     private String driverPhone;
 
+    /**
+     * 车辆Id
+     */
     private Long carId;
 
     /**
