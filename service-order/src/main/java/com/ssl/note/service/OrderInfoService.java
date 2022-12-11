@@ -108,6 +108,8 @@ public class OrderInfoService {
         List<String> radiusList = Lists.newArrayList("2000", "4000", "5000");
         ResponseResult<List<TerminalResponse>> terminalResp = null;
 
+        // goto语法，内层for循环结束，外层也直接跳出
+        radius:
         for (int i = 0; i < radiusList.size(); i++) {
             radius = radiusList.get(i);
             // 搜索周边终端
@@ -166,6 +168,9 @@ public class OrderInfoService {
                 orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
 
                 orderInfoMapper.updateById(orderInfo);
+
+                // 一旦有1个司机接单，外层循环也一起结束
+                break radius;
             }
         }
     }
