@@ -1,13 +1,12 @@
 package com.ssl.note.controller;
 
 import com.ssl.note.dto.OrderInfo;
+import com.ssl.note.mapper.OrderInfoMapper;
 import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.service.OrderInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: SongShengLin
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/test")
+@Slf4j
 public class TestController {
 
     @Autowired
@@ -24,8 +24,20 @@ public class TestController {
     @Autowired
     private OrderInfoService orderInfoService;
 
+    @Autowired
+    private OrderInfoMapper orderInfoMapper;
+
     @PostMapping("/order/add/terminal")
-    public int orderAddTerminalTest(@RequestBody OrderInfo OrderInfo) {
-        return orderInfoService.dispatchRealTimeOrder(OrderInfo);
+    public String orderAddTerminalTest(@RequestBody OrderInfo OrderInfo) {
+        orderInfoService.dispatchRealTimeOrder(OrderInfo);
+        return "real-test-orderInfo-add success";
+    }
+
+    @GetMapping("/order/add/{orderId}")
+    public String orderAddTerminalTest(@PathVariable("orderId") Long orderId) {
+        log.info("orderId:{}", orderId);
+        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+        orderInfoService.dispatchRealTimeOrder(orderInfo);
+        return "real-test-order-add success";
     }
 }

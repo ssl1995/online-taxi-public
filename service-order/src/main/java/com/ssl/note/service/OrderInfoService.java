@@ -96,7 +96,7 @@ public class OrderInfoService {
     /**
      * 保存订单成功后，分配订单
      */
-    public int dispatchRealTimeOrder(OrderInfo orderInfo) {
+    public synchronized void dispatchRealTimeOrder(OrderInfo orderInfo) {
         // 目的地纬度
         String depLatitude = orderInfo.getDepLatitude();
         // 目的地经度
@@ -168,7 +168,6 @@ public class OrderInfoService {
                 orderInfoMapper.updateById(orderInfo);
             }
         }
-        return 1;
     }
 
     private boolean isDriverOrderGoingOn(Long driverId) {
