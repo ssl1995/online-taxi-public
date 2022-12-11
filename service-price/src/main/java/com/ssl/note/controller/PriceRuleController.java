@@ -2,6 +2,7 @@ package com.ssl.note.controller;
 
 import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
+import com.ssl.note.request.PriceRuleIsNewRequest;
 import com.ssl.note.service.PriceRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +34,9 @@ public class PriceRuleController {
         return priceRuleService.getNewestVersion(fareType);
     }
 
-    @GetMapping("/is-new")
-    public ResponseResult<Boolean> isNew(@RequestParam("fareType") String fareType, @RequestParam("fareVersion") Integer fareVersion) {
-        return priceRuleService.isNew(fareType, fareVersion);
+    @PostMapping("/is-new")
+    public ResponseResult<Boolean> isNew(@RequestBody PriceRuleIsNewRequest priceRuleIsNewRequest) {
+        return priceRuleService.isNew(priceRuleIsNewRequest.getFareType(), priceRuleIsNewRequest.getFareVersion());
     }
 
     @GetMapping("/is-exists")

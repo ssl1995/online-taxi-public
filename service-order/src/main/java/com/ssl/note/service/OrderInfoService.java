@@ -12,6 +12,7 @@ import com.ssl.note.remote.CityDriverUserClient;
 import com.ssl.note.remote.ServicePriceClient;
 import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.request.OrderRequest;
+import com.ssl.note.request.PriceRuleIsNewRequest;
 import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.utils.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -181,7 +182,10 @@ public class OrderInfoService {
     }
 
     private boolean isNewFareTypeAndVersion(String fareType, Integer fareVersion) {
-        ResponseResult<Boolean> isNewResp = servicePriceClient.isNew(fareType, fareVersion);
+        PriceRuleIsNewRequest priceRuleIsNewRequest = new PriceRuleIsNewRequest();
+        priceRuleIsNewRequest.setFareType(fareType);
+        priceRuleIsNewRequest.setFareVersion(fareVersion);
+        ResponseResult<Boolean> isNewResp = servicePriceClient.isNew(priceRuleIsNewRequest);
         if (!Objects.equals(isNewResp.getCode(), CommonStatusEnum.SUCCESS.getCode()) || !isNewResp.getData()) {
             return Boolean.FALSE;
         }

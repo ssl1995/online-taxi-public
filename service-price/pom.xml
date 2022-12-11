@@ -83,6 +83,12 @@
             <artifactId>feign-httpclient</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.ssl.note</groupId>
+            <artifactId>internal-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 
     </dependencies>
 
