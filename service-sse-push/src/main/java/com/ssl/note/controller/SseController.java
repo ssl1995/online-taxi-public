@@ -2,6 +2,7 @@ package com.ssl.note.controller;
 
 import com.ssl.note.utils.SsePrefixUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import java.util.Map;
  */
 @RestController
 @Slf4j
+@CrossOrigin // 解决跨域
 public class SseController {
 
     public static Map<String, SseEmitter> sseEmitterMap = new HashMap<>();
@@ -64,7 +66,7 @@ public class SseController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        log.info("给用户：" + sseMapKey + ",发送了消息：" + content);
         return "给用户：" + sseMapKey + ",发送了消息：" + content;
     }
 
@@ -81,6 +83,5 @@ public class SseController {
         System.out.println("关闭连接：" + sseMapKey);
         sseEmitterMap.remove(sseMapKey);
         return "close 成功";
-
     }
 }

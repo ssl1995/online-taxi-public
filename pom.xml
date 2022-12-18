@@ -25,7 +25,7 @@
         <module>service-order</module>
         <module>api-boss</module>
         <module>api-driver</module>
-        <module>service-sse-client</module>
+        <module>service-sse-push</module>
     </modules>
 
     <properties>

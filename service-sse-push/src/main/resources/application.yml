@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: service-sse-client
+    name: service-sse-push
   cloud:
     nacos:
       discovery:

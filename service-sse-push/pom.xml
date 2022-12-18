@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.ssl.note</groupId>
-    <artifactId>service-sse-client</artifactId>
+    <artifactId>service-sse-push</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>service-sse-client</name>
     <description>service-sse-client</description>

@@ -4,13 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.google.common.collect.Lists;
 import com.ssl.note.constant.CommonStatusEnum;
+import com.ssl.note.constant.IdentityConstant;
 import com.ssl.note.constant.OrderConstants;
+import com.ssl.note.dto.Car;
 import com.ssl.note.dto.OrderInfo;
 import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.OrderInfoMapper;
-import com.ssl.note.remote.CityDriverUserClient;
+import com.ssl.note.remote.DriverUserClient;
 import com.ssl.note.remote.ServicePriceClient;
+import com.ssl.note.remote.SsePushClient;
 import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.request.OrderRequest;
 import com.ssl.note.request.PriceRuleIsNewRequest;
@@ -19,6 +22,7 @@ import com.ssl.note.response.TerminalResponse;
 import com.ssl.note.utils.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
@@ -50,13 +54,16 @@ public class OrderInfoService {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private CityDriverUserClient cityDriverUserClient;
+    private DriverUserClient driverUserClient;
 
     @Autowired
     private TerminalClient terminalClient;
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private SsePushClient ssePushClient;
 
     public ResponseResult<String> add(OrderRequest orderRequest) {
         // 检查：当前城市是否有司机
@@ -132,7 +139,7 @@ public class OrderInfoService {
                 String TerminalLatitude = terminalResponse.getLatitude();
 
                 // 获取有效司机车辆信息
-                ResponseResult<OrderDriverResponse> orderDriverResp = cityDriverUserClient.getAvailableDriverByCarId(carId);
+                ResponseResult<OrderDriverResponse> orderDriverResp = driverUserClient.getAvailableDriverByCarId(carId);
                 if (Objects.equals(orderDriverResp.getCode(), CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getCode())) {
                     log.info("没有车辆ID：" + carId + ",对于的司机");
                     continue;
@@ -182,6 +189,12 @@ public class OrderInfoService {
 
                     orderInfoMapper.updateById(orderInfo);
 
+                    // 发送消息给司机
+                    sendMsgToDriver(orderInfo, driverId);
+
+                    // 发送消息给乘客
+                    sendMsgToPassenger(orderInfo, carId);
+
                     // 一旦有1个司机接单，外层循环也一起结束
                     break radius;
                 } finally {
@@ -194,6 +207,45 @@ public class OrderInfoService {
             }
         }
     }
+
+    private void sendMsgToPassenger(OrderInfo orderInfo, Long carId) {
+        JSONObject passengerContent = new JSONObject();
+        // 乘客需要司机信息
+        passengerContent.put("orderId", orderInfo.getId());
+        passengerContent.put("driverId", orderInfo.getDriverId());
+        passengerContent.put("driverPhone", orderInfo.getDriverPhone());
+        passengerContent.put("vehicleNo", orderInfo.getVehicleNo());
+
+        // 乘客需要车辆信息，调用车辆服务
+        ResponseResult<Car> carById = driverUserClient.getCarById(carId);
+        Car carRemote = carById.getData();
+        passengerContent.put("brand", carRemote.getBrand());
+        passengerContent.put("model", carRemote.getModel());
+        passengerContent.put("vehicleColor", carRemote.getVehicleColor());
+
+        passengerContent.put("receiveOrderCarLongitude", orderInfo.getReceiveOrderCarLongitude());
+        passengerContent.put("receiveOrderCarLatitude", orderInfo.getReceiveOrderCarLatitude());
+
+        ssePushClient.push(orderInfo.getPassengerId(), IdentityConstant.PASSENGER_IDENTITY, passengerContent.toString());
+    }
+
+    private void sendMsgToDriver(OrderInfo orderInfo, Long driverId) {
+        JSONObject driverContent = new JSONObject();
+        // 司机需要知道乘客的信息
+        driverContent.put("orderId", orderInfo.getId());
+        driverContent.put("passengerId", orderInfo.getPassengerId());
+        driverContent.put("passengerPhone", orderInfo.getPassengerPhone());
+        driverContent.put("departure", orderInfo.getDeparture());
+        driverContent.put("depLongitude", orderInfo.getDepLongitude());
+        driverContent.put("depLatitude", orderInfo.getDepLatitude());
+
+        driverContent.put("destination", orderInfo.getDestination());
+        driverContent.put("destLongitude", orderInfo.getDestLongitude());
+        driverContent.put("destLatitude", orderInfo.getDestLatitude());
+
+        ssePushClient.push(driverId, IdentityConstant.DIVER_IDENTITY, driverContent.toString());
+    }
+
 
     private boolean isDriverOrderGoingOn(Long driverId) {
         // 司机接单状态为2-5表示上一单正在继续中
@@ -208,7 +260,7 @@ public class OrderInfoService {
     }
 
     private boolean isAvailableDriver(String cityCode) {
-        ResponseResult<Boolean> isAvailableDriver = cityDriverUserClient.isAvailableDriver(cityCode);
+        ResponseResult<Boolean> isAvailableDriver = driverUserClient.isAvailableDriver(cityCode);
         if (Objects.isNull(isAvailableDriver) || !Objects.equals(isAvailableDriver.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
             log.error("isAvailableDriver为空！");
             return Boolean.FALSE;
