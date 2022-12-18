@@ -34,10 +34,18 @@ public class OrderInfoController {
     }
 
     /**
-     * 接到乘客，更新订单
+     * 去接乘客
      */
     @PostMapping("/to-puck-up-passenger")
     public ResponseResult<String> toPucUpPassenger(@RequestBody OrderRequest request) {
         return orderInfoService.toPucUpPassenger(request);
+    }
+
+    /**
+     * 到达乘客上车点
+     */
+    @PostMapping("/arrived-departure")
+    public ResponseResult<String> arrivedDeparture(@RequestBody OrderRequest orderRequest){
+        return orderInfoService.arrivedDeparture(orderRequest);
     }
 }

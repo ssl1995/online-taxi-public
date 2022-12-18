@@ -382,4 +382,17 @@ public class OrderInfoService {
 
         return ResponseResult.success();
     }
+
+    public ResponseResult<String> arrivedDeparture(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+
+        OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
+                .eq(OrderInfo::getId, orderId).one();
+        orderInfo.setDriverArrivedDepartureTime(LocalDateTime.now());
+        orderInfo.setOrderStatus(OrderConstants.DRIVER_ARRIVED_DEPARTURE);
+
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success();
+    }
 }
