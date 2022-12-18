@@ -55,7 +55,7 @@ public class OrderRequest {
     private String deviceCode;
 
     /**
-     * 司机去接乘客出发时间
+     * 司机去接乘客出发时间,其实是不用传的，后端自己生成
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime toPickUpPassengerTime;

@@ -360,4 +360,26 @@ public class OrderInfoService {
         }
         return ResponseResult.success(orderInfo);
     }
+
+    public ResponseResult<String> toPucUpPassenger(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+        // 接乘客时间不用传，后台自己生成
+//        LocalDateTime toPickUpPassengerTime = orderRequest.getToPickUpPassengerTime();
+        String toPickUpPassengerLongitude = orderRequest.getToPickUpPassengerLongitude();
+        String toPickUpPassengerLatitude = orderRequest.getToPickUpPassengerLatitude();
+        String toPickUpPassengerAddress = orderRequest.getToPickUpPassengerAddress();
+
+        OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
+                .eq(OrderInfo::getId, orderId).one();
+
+        orderInfo.setToPickUpPassengerAddress(toPickUpPassengerAddress);
+        orderInfo.setToPickUpPassengerLatitude(toPickUpPassengerLatitude);
+        orderInfo.setToPickUpPassengerLongitude(toPickUpPassengerLongitude);
+        orderInfo.setToPickUpPassengerTime(LocalDateTime.now());
+        orderInfo.setOrderStatus(OrderConstants.DRIVER_TO_PICK_UP_PASSENGER);
+
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success();
+    }
 }

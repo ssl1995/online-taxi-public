@@ -16,14 +16,28 @@ public class OrderInfoController {
     @Autowired
     private OrderInfoService orderInfoService;
 
+    /**
+     * 下订单
+     */
     @PostMapping("/add")
     public ResponseResult<String> add(@RequestBody OrderRequest orderRequest) {
         log.info("service-order接收到请求参数:{}", orderRequest);
         return orderInfoService.add(orderRequest);
     }
 
+    /**
+     * 查询订单
+     */
     @GetMapping("/{id}")
     public ResponseResult<OrderInfo> getById(@PathVariable("id") Long id) {
         return orderInfoService.getById(id);
+    }
+
+    /**
+     * 接到乘客，更新订单
+     */
+    @PostMapping("/to-puck-up-passenger")
+    public ResponseResult<String> toPucUpPassenger(@RequestBody OrderRequest request) {
+        return orderInfoService.toPucUpPassenger(request);
     }
 }
