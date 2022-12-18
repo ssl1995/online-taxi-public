@@ -98,8 +98,20 @@ public class OrderInfoService {
         orderInfo.setGmtModified(LocalDateTime.now());
         orderInfoMapper.insert(orderInfo);
 
-        // 分配订单，并更新订单
-        dispatchRealTimeOrder(orderInfo);
+        // 循环分配订单，并更新订单，每一次分配暂停20s
+        for (int i = 1; i <= 6; i++) {
+            int isSuccess = dispatchRealTimeOrder(orderInfo);
+
+            if (Objects.equals(isSuccess, CommonStatusEnum.SUCCESS.getCode())) {
+                break;
+            }
+
+            try {
+                Thread.sleep(20 * 1000);
+            } catch (Exception e) {
+                log.error("暂停20s失败");
+            }
+        }
 
         return ResponseResult.success("");
     }
@@ -108,7 +120,10 @@ public class OrderInfoService {
     /**
      * 保存订单成功后，分配订单
      */
-    public void dispatchRealTimeOrder(OrderInfo orderInfo) {
+    public int dispatchRealTimeOrder(OrderInfo orderInfo) {
+        // 标识循环是否继续,0=失败,1=成功
+        int result = 0;
+
         // 目的地纬度
         String depLatitude = orderInfo.getDepLatitude();
         // 目的地经度
@@ -196,6 +211,7 @@ public class OrderInfoService {
                     sendMsgToPassenger(orderInfo, carId);
 
                     // 一旦有1个司机接单，外层循环也一起结束
+                    result = 1;
                     break radius;
                 } finally {
                     // 问题：避免解锁太快，把别人给解锁了
@@ -206,6 +222,8 @@ public class OrderInfoService {
                 }
             }
         }
+
+        return result;
     }
 
     private void sendMsgToPassenger(OrderInfo orderInfo, Long carId) {
