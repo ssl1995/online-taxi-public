@@ -361,7 +361,7 @@ public class OrderInfoService {
         return ResponseResult.success(orderInfo);
     }
 
-    public ResponseResult<String> toPucUpPassenger(OrderRequest orderRequest) {
+    public ResponseResult<String> toPuckUpPassenger(OrderRequest orderRequest) {
         Long orderId = orderRequest.getOrderId();
         // 接乘客时间不用传，后台自己生成
 //        LocalDateTime toPickUpPassengerTime = orderRequest.getToPickUpPassengerTime();
@@ -393,6 +393,21 @@ public class OrderInfoService {
 
         orderInfoMapper.updateById(orderInfo);
 
+        return ResponseResult.success();
+    }
+
+    public ResponseResult<String> puckUpPassenger(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+
+        OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
+                .eq(OrderInfo::getId, orderId).one();
+
+        orderInfo.setPickUpPassengerLongitude(orderRequest.getPickUpPassengerLongitude());
+        orderInfo.setPickUpPassengerLatitude(orderRequest.getPickUpPassengerLatitude());
+        orderInfo.setPickUpPassengerTime(LocalDateTime.now());
+        orderInfo.setOrderStatus(OrderConstants.PICK_UP_PASSENGER);
+
+        orderInfoMapper.updateById(orderInfo);
         return ResponseResult.success();
     }
 }

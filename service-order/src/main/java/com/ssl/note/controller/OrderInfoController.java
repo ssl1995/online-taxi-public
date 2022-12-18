@@ -37,8 +37,8 @@ public class OrderInfoController {
      * 去接乘客
      */
     @PostMapping("/to-puck-up-passenger")
-    public ResponseResult<String> toPucUpPassenger(@RequestBody OrderRequest request) {
-        return orderInfoService.toPucUpPassenger(request);
+    public ResponseResult<String> toPuckUpPassenger(@RequestBody OrderRequest request) {
+        return orderInfoService.toPuckUpPassenger(request);
     }
 
     /**
@@ -47,5 +47,13 @@ public class OrderInfoController {
     @PostMapping("/arrived-departure")
     public ResponseResult<String> arrivedDeparture(@RequestBody OrderRequest orderRequest){
         return orderInfoService.arrivedDeparture(orderRequest);
+    }
+
+    /**
+     * 司机接到乘客
+     */
+    @PostMapping("/puck-up-passenger")
+    public ResponseResult<String> pucUpPassenger(@RequestBody OrderRequest request) {
+        return orderInfoService.puckUpPassenger(request);
     }
 }
