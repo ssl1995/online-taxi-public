@@ -4,6 +4,7 @@ import com.ssl.note.constant.AMapConfigConstants;
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.TerminalResponse;
+import com.ssl.note.response.TrSearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -36,6 +37,9 @@ public class TerminalClient {
     @Autowired
     private RestTemplate restTemplate;
 
+    /**
+     * 新增终端
+     */
     public ResponseResult<TerminalResponse> add(String name, String desc) {
         String url = AMapConfigConstants.TERMINAL_ADD_URL +
                 "?" +
@@ -67,6 +71,10 @@ public class TerminalClient {
         return ResponseResult.success(terminalResponse);
     }
 
+
+    /**
+     * 终端搜索
+     */
     public ResponseResult<List<TerminalResponse>> aroundSearch(String canter, String radius) {
         String url = AMapConfigConstants.TERMINAL_AROUND_SEARCH_URL +
                 "?" +
@@ -100,7 +108,7 @@ public class TerminalClient {
             JSONObject jsonObject = results.getJSONObject(i);
             // desc是carId，不能出错。Json.getLong是会出现经度丢失的，先使用getString再转换为Long
             String desc = jsonObject.getString("desc");
-            Long carId = !StringUtils.equals(desc,"null") ? Long.parseLong(desc) : null;
+            Long carId = !StringUtils.equals(desc, "null") ? Long.parseLong(desc) : null;
             String tid = jsonObject.getString("tid");
 
             JSONObject location = jsonObject.getJSONObject("location");
@@ -116,6 +124,54 @@ public class TerminalClient {
         }
 
         return ResponseResult.success(terminalResponseList);
+    }
+
+    /**
+     * 轨迹查询
+     */
+    public ResponseResult<TrSearchResponse> trSearch(String tid, Long startTime, Long endTime) {
+        String url = AMapConfigConstants.TERMINAL_TRSEARCH +
+                "?" +
+                "key=" + aMapKey +
+                "&" +
+                "sid=" + aMapSid +
+                "&" +
+                "tid=" + tid +
+                "&" +
+                "starttime=" + startTime +
+                "&" +
+                "endtime=" + endTime;
+
+        ResponseEntity<String> forEntity = restTemplate.postForEntity(url, null, String.class);
+        String responseBody = forEntity.getBody();
+        JSONObject responseJson = JSONObject.fromObject(responseBody);
+        log.info("轨迹查询请求结果:{}", responseJson);
+
+        int errCode = (int) responseJson.get("errcode");
+        // 请求失败
+        if (!Objects.equals(errCode, AMapConfigConstants.ERROR_CODE_SUCCESS)) {
+            return ResponseResult.fail(CommonStatusEnum.FAIL.getCode(), String.valueOf(responseJson.get("errmsg")));
+        }
+
+        JSONObject data = responseJson.getJSONObject("data");
+
+        JSONArray tracks = data.getJSONArray("tracks");
+
+        long distance = 0L;
+        long time = 0L;
+        for (int i = 0; i < tracks.size(); i++) {
+            JSONObject trackJson = tracks.getJSONObject(i);
+            // 行驶路程，单位米
+            distance = trackJson.getLong("distance");
+            // 花费时间，单位分钟
+            time = Long.parseLong(trackJson.getString("time")) / (1000 * 60);
+        }
+
+        TrSearchResponse trSearchResponse = TrSearchResponse.builder()
+                .driveMile(distance)
+                .driveTime(time)
+                .build();
+        return ResponseResult.success(trSearchResponse);
     }
 
 }

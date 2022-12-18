@@ -3,6 +3,7 @@ package com.ssl.note.service;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.response.TerminalResponse;
+import com.ssl.note.response.TrSearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,10 @@ public class TerminalService {
     public ResponseResult<List<TerminalResponse>> aroundSearch(String canter, String radius) {
         return terminalClient.aroundSearch(canter, radius);
     }
+
+    public ResponseResult<TrSearchResponse> trSearch(String tid, Long startTime, Long endTime) {
+        return terminalClient.trSearch(tid, startTime, endTime);
+    }
+
 
 }

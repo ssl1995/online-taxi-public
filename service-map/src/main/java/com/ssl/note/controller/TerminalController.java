@@ -2,12 +2,10 @@ package com.ssl.note.controller;
 
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.TerminalResponse;
+import com.ssl.note.response.TrSearchResponse;
 import com.ssl.note.service.TerminalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +29,11 @@ public class TerminalController {
     @PostMapping("/aroundSearch")
     public ResponseResult<List<TerminalResponse>> aroundSearch(@RequestParam("canter") String canter, @RequestParam("radius") String radius) {
         return terminalService.aroundSearch(canter, radius);
+    }
+
+    @GetMapping("/trsearch")
+    public ResponseResult<TrSearchResponse> trSearch(@RequestParam("tid") String tid, @RequestParam("starttime") Long startTime, @RequestParam("endtime") Long endTime) {
+        return terminalService.trSearch(tid, startTime, endTime);
     }
 
 }
