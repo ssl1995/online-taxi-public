@@ -385,9 +385,9 @@ public class OrderInfoService {
 
     public ResponseResult<String> arrivedDeparture(OrderRequest orderRequest) {
         Long orderId = orderRequest.getOrderId();
-
         OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
                 .eq(OrderInfo::getId, orderId).one();
+
         orderInfo.setDriverArrivedDepartureTime(LocalDateTime.now());
         orderInfo.setOrderStatus(OrderConstants.DRIVER_ARRIVED_DEPARTURE);
 
@@ -398,7 +398,6 @@ public class OrderInfoService {
 
     public ResponseResult<String> puckUpPassenger(OrderRequest orderRequest) {
         Long orderId = orderRequest.getOrderId();
-
         OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
                 .eq(OrderInfo::getId, orderId).one();
 
@@ -406,6 +405,21 @@ public class OrderInfoService {
         orderInfo.setPickUpPassengerLatitude(orderRequest.getPickUpPassengerLatitude());
         orderInfo.setPickUpPassengerTime(LocalDateTime.now());
         orderInfo.setOrderStatus(OrderConstants.PICK_UP_PASSENGER);
+
+        orderInfoMapper.updateById(orderInfo);
+        return ResponseResult.success();
+    }
+
+    public ResponseResult<String> passengerGetOff(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+        OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
+                .eq(OrderInfo::getId, orderId).one();
+
+        orderInfo.setPassengerGetoffTime(LocalDateTime.now());
+        orderInfo.setPassengerGetoffLongitude(orderRequest.getPassengerGetoffLongitude());
+        orderInfo.setPassengerGetoffLatitude(orderRequest.getPassengerGetoffLatitude());
+        orderInfo.setOrderStatus(OrderConstants.PASSENGER_GETOFF);
+        // todo 获取总的行程距离和行程价格
 
         orderInfoMapper.updateById(orderInfo);
         return ResponseResult.success();
