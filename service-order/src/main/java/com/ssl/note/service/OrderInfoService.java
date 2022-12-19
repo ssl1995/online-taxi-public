@@ -422,7 +422,7 @@ public class OrderInfoService {
         orderInfo.setPassengerGetoffLatitude(orderRequest.getPassengerGetoffLatitude());
         orderInfo.setOrderStatus(OrderConstants.PASSENGER_GETOFF);
 
-        // 获取总的行程距离和行程价格
+        // 获取总的行程距离和行程时长
         ResponseResult<Car> carResponse = driverUserClient.getCarById(orderInfo.getCarId());
         if (!Objects.equals(carResponse.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
             return ResponseResult.fail(carResponse.getCode(), carResponse.getMessage());
@@ -432,8 +432,6 @@ public class OrderInfoService {
         // localDateTime设置时区和获取毫秒数
         Long startTime = orderInfo.getPickUpPassengerTime().toInstant(ZoneOffset.of("+8")).toEpochMilli();
         Long endTime = LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        log.info("开始时间：" + startTime);
-        log.info("结束时间：" + endTime);
 
         ResponseResult<TrSearchResponse> trSearchResponse = serviceMapClient.trSearch(tid, startTime, endTime);
         if (!Objects.equals(trSearchResponse.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
@@ -445,6 +443,13 @@ public class OrderInfoService {
         Long driveTime = trSearch.getDriveTime();
         orderInfo.setDriveMile(driveMile);
         orderInfo.setDriveTime(driveTime);
+
+        // 计算行程价格
+        ResponseResult<Double> priceResponse = servicePriceClient.calculatePrice(driveMile.intValue(), driveTime.intValue(), orderInfo.getAddress(), orderInfo.getVehicleType());
+        if (!Objects.equals(priceResponse.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+            return ResponseResult.fail(priceResponse.getCode(), priceResponse.getMessage());
+        }
+        orderInfo.setPrice(priceResponse.getData());
 
         orderInfoMapper.updateById(orderInfo);
         return ResponseResult.success();

@@ -1,6 +1,7 @@
 package com.ssl.note.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.ssl.note.constant.CommonStatusEnum;
 import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class ForecastPriceService {
+public class PriceService {
 
     @Autowired
     private ServiceMapClient serviceMapClient;
@@ -117,5 +118,28 @@ public class ForecastPriceService {
         price = BigDecimalUtils.add(price, timePrice);
 
         return price;
+    }
+
+
+    /**
+     * 计算实际价格
+     */
+    public ResponseResult<Double> calculatePrice(Integer distance, Integer duration, String cityCode, String vehicleType) {
+        // 查询计价规则
+        List<PriceRule> priceRules = new LambdaQueryChainWrapper<>(priceRuleMapper)
+                .eq(PriceRule::getCityCode, cityCode)
+                .eq(PriceRule::getVehicleType, vehicleType)
+                .orderByDesc(PriceRule::getFareVersion)
+                .list();
+        if (priceRules.size() == 0) {
+            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_EMPTY.getCode(), CommonStatusEnum.PRICE_RULE_EMPTY.getMessage());
+        }
+
+        PriceRule priceRule = priceRules.get(0);
+
+        log.info("根据距离、时长和计价规则，计算价格");
+
+        double price = getPrice(distance, duration, priceRule);
+        return ResponseResult.success(price);
     }
 }

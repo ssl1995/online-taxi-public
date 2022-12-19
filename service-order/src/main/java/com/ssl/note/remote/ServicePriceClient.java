@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @Author: SongShengLin
@@ -21,4 +22,11 @@ public interface ServicePriceClient {
 
     @GetMapping("/price-rule/is-exists")
     ResponseResult<Boolean> isExists(@RequestBody PriceRule priceRule);
+
+    /**
+     * 获取实际价格
+     */
+    @PostMapping("/calculate-price")
+    ResponseResult<Double> calculatePrice(@RequestParam Integer distance, @RequestParam Integer duration,
+                                          @RequestParam String cityCode, @RequestParam String vehicleType);
 }
