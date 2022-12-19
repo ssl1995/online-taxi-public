@@ -2,7 +2,7 @@ package com.ssl.note.controller;
 
 import com.ssl.note.dto.OrderInfo;
 import com.ssl.note.mapper.OrderInfoMapper;
-import com.ssl.note.remote.TerminalClient;
+import com.ssl.note.remote.ServiceMapClient;
 import com.ssl.note.service.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
 
     @Autowired
-    private TerminalClient terminalClient;
+    private ServiceMapClient terminalClient;
 
     @Autowired
     private OrderInfoService orderInfoService;

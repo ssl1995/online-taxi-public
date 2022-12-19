@@ -12,13 +12,14 @@ import com.ssl.note.dto.PriceRule;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.mapper.OrderInfoMapper;
 import com.ssl.note.remote.DriverUserClient;
+import com.ssl.note.remote.ServiceMapClient;
 import com.ssl.note.remote.ServicePriceClient;
 import com.ssl.note.remote.SsePushClient;
-import com.ssl.note.remote.TerminalClient;
 import com.ssl.note.request.OrderRequest;
 import com.ssl.note.request.PriceRuleIsNewRequest;
 import com.ssl.note.response.OrderDriverResponse;
 import com.ssl.note.response.TerminalResponse;
+import com.ssl.note.response.TrSearchResponse;
 import com.ssl.note.utils.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
@@ -31,6 +32,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +59,7 @@ public class OrderInfoService {
     private DriverUserClient driverUserClient;
 
     @Autowired
-    private TerminalClient terminalClient;
+    private ServiceMapClient serviceMapClient;
 
     @Autowired
     private RedissonClient redissonClient;
@@ -140,7 +142,7 @@ public class OrderInfoService {
         for (int i = 0; i < radiusList.size(); i++) {
             radius = radiusList.get(i);
             // 搜索周边终端
-            terminalResp = terminalClient.aroundSearch(center, radius);
+            terminalResp = serviceMapClient.aroundSearch(center, radius);
             log.info("在半径为" + radius + "的范围内，寻找车辆,结果：" + JSONArray.fromObject(terminalResp.getData()).toString());
             if (Objects.isNull(terminalResp.getData())) {
                 continue;
@@ -419,7 +421,21 @@ public class OrderInfoService {
         orderInfo.setPassengerGetoffLongitude(orderRequest.getPassengerGetoffLongitude());
         orderInfo.setPassengerGetoffLatitude(orderRequest.getPassengerGetoffLatitude());
         orderInfo.setOrderStatus(OrderConstants.PASSENGER_GETOFF);
-        // todo 获取总的行程距离和行程价格
+
+        // 获取总的行程距离和行程价格
+        ResponseResult<Car> carResponse = driverUserClient.getCarById(orderInfo.getCarId());
+        String tid = carResponse.getData().getTid();
+        Long startTime = orderInfo.getPickUpPassengerTime().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        Long endTime = LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+        log.info("开始时间：" + startTime);
+        log.info("结束时间：" + endTime);
+
+        ResponseResult<TrSearchResponse> trSearchResponse = serviceMapClient.trSearch(tid, startTime, endTime);
+        TrSearchResponse trSearch = trSearchResponse.getData();
+        Long driveMile = trSearch.getDriveMile();
+        Long driveTime = trSearch.getDriveTime();
+        orderInfo.setDriveMile(driveMile);
+        orderInfo.setDriveTime(driveTime);
 
         orderInfoMapper.updateById(orderInfo);
         return ResponseResult.success();
