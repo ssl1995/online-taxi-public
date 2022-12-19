@@ -155,6 +155,10 @@ public class TerminalClient {
 
         JSONObject data = responseJson.getJSONObject("data");
 
+        if (!data.has("tracks")) {
+            return ResponseResult.fail(CommonStatusEnum.FAIL.getCode(), "没有tracks轨迹,待上传轨迹点!");
+        }
+
         JSONArray tracks = data.getJSONArray("tracks");
 
         long distance = 0L;

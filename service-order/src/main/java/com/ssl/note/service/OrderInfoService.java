@@ -424,13 +424,22 @@ public class OrderInfoService {
 
         // 获取总的行程距离和行程价格
         ResponseResult<Car> carResponse = driverUserClient.getCarById(orderInfo.getCarId());
+        if (!Objects.equals(carResponse.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+            return ResponseResult.fail(carResponse.getCode(), carResponse.getMessage());
+        }
+
         String tid = carResponse.getData().getTid();
+        // localDateTime设置时区和获取毫秒数
         Long startTime = orderInfo.getPickUpPassengerTime().toInstant(ZoneOffset.of("+8")).toEpochMilli();
         Long endTime = LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
         log.info("开始时间：" + startTime);
         log.info("结束时间：" + endTime);
 
         ResponseResult<TrSearchResponse> trSearchResponse = serviceMapClient.trSearch(tid, startTime, endTime);
+        if (!Objects.equals(trSearchResponse.getCode(), CommonStatusEnum.SUCCESS.getCode())) {
+            return ResponseResult.fail(trSearchResponse.getCode(), trSearchResponse.getMessage());
+        }
+
         TrSearchResponse trSearch = trSearchResponse.getData();
         Long driveMile = trSearch.getDriveMile();
         Long driveTime = trSearch.getDriveTime();

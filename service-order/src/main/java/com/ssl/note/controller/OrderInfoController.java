@@ -59,9 +59,7 @@ public class OrderInfoController {
 
 
     /**
-     * 乘客到达目的地，行程终止
-     * @param orderRequest
-     * @return
+     * 乘客到达目的地，下车，行程终止
      */
     @PostMapping("/passenger-getoff")
     public ResponseResult<String> passengerGetOff(@RequestBody OrderRequest orderRequest){
