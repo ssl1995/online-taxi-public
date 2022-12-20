@@ -53,7 +53,7 @@ public class OrderController {
     }
 
     /**
-     * 乘客到达目的地，下车，行程终止
+     * 取消订单
      */
     @PostMapping("/cancel")
     public ResponseResult<String> cancel(String orderId) {
