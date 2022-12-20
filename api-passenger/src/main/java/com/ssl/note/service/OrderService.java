@@ -21,4 +21,11 @@ public class OrderService {
     public ResponseResult<String> add(@RequestBody OrderRequest orderRequest) {
         return serviceOrderClient.add(orderRequest);
     }
+
+    /**
+     * 乘客到达目的地，下车，行程终止
+     */
+    public ResponseResult<String> cancel(String orderId, String identity) {
+        return serviceOrderClient.cancel(orderId, identity);
+    }
 }

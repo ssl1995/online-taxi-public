@@ -32,4 +32,10 @@ public interface ServiceOrderClient {
      */
     @PostMapping("/order/passenger-getoff")
     ResponseResult<String> passengerGetOff(@RequestBody OrderRequest orderRequest);
+
+    /**
+     * 取消订单
+     */
+    @PostMapping("/order/cancel")
+    ResponseResult<String> cancel(String orderId, String identity);
 }

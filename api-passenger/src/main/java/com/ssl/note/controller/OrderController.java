@@ -1,5 +1,6 @@
 package com.ssl.note.controller;
 
+import com.ssl.note.constant.IdentityConstant;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.request.OrderRequest;
 import com.ssl.note.service.OrderService;
@@ -26,5 +27,13 @@ public class OrderController {
     @PostMapping("/add")
     public ResponseResult<String> add(@RequestBody OrderRequest orderRequest) {
         return orderService.add(orderRequest);
+    }
+
+    /**
+     * 乘客到达目的地，下车，行程终止
+     */
+    @PostMapping("/cancel")
+    public ResponseResult<String> cancel(String orderId) {
+        return orderService.cancel(orderId, IdentityConstant.PASSENGER_IDENTITY);
     }
 }

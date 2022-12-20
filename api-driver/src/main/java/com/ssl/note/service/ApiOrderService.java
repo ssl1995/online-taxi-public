@@ -36,7 +36,6 @@ public class ApiOrderService {
      */
     public ResponseResult<String> pucUpPassenger(OrderRequest request) {
         return serviceOrderClient.pucUpPassenger(request);
-
     }
 
     /**
@@ -44,6 +43,12 @@ public class ApiOrderService {
      */
     public ResponseResult<String> passengerGetOff(OrderRequest orderRequest) {
         return serviceOrderClient.passengerGetOff(orderRequest);
+    }
 
+    /**
+     * 乘客到达目的地，下车，行程终止
+     */
+    public ResponseResult<String> cancel(String orderId, String identity) {
+        return serviceOrderClient.cancel(orderId, identity);
     }
 }

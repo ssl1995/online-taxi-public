@@ -19,6 +19,12 @@ public interface ServiceOrderClient {
     ResponseResult<String> add(@RequestBody OrderRequest orderRequest);
 
     @GetMapping("/test/order/add/{orderId}")
-    String orderAddTerminalTest(@PathVariable("orderId") Long orderId) ;
+    String orderAddTerminalTest(@PathVariable("orderId") Long orderId);
+
+    /**
+     * 取消订单
+     */
+    @PostMapping("/order/cancel")
+    ResponseResult<String> cancel(String orderId, String identity);
 
 }

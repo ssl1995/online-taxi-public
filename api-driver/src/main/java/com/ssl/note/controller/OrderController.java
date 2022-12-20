@@ -1,5 +1,6 @@
 package com.ssl.note.controller;
 
+import com.ssl.note.constant.IdentityConstant;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.request.OrderRequest;
 import com.ssl.note.service.ApiOrderService;
@@ -49,5 +50,13 @@ public class OrderController {
     @PostMapping("/passenger-getoff")
     public ResponseResult<String> passengerGetOff(@RequestBody OrderRequest orderRequest) {
         return apiOrderService.passengerGetOff(orderRequest);
+    }
+
+    /**
+     * 乘客到达目的地，下车，行程终止
+     */
+    @PostMapping("/cancel")
+    public ResponseResult<String> cancel(String orderId) {
+        return apiOrderService.cancel(orderId, IdentityConstant.DIVER_IDENTITY);
     }
 }
