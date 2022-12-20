@@ -454,4 +454,14 @@ public class OrderInfoService {
         orderInfoMapper.updateById(orderInfo);
         return ResponseResult.success();
     }
+
+    public ResponseResult<String> pay(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+        OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
+                .eq(OrderInfo::getId, orderId).one();
+        orderInfo.setOrderStatus(OrderConstants.SUCCESS_PAY);
+
+        orderInfoMapper.updateById(orderInfo);
+        return ResponseResult.success();
+    }
 }

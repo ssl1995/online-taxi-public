@@ -26,6 +26,7 @@ public class AlipayController {
 
     /**
      * 沙箱支付
+     * 支付宝沙箱账号:https://open.alipay.com/develop/sandbox/account
      * 浏览器访问: http://localhost:9001/alipay/pay?subject=车企&outTradeNo=1001&totalAmount=100
      */
     @GetMapping("/pay")
