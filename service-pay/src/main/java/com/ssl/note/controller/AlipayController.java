@@ -3,6 +3,7 @@ package com.ssl.note.controller;
 import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.payment.page.models.AlipayTradePagePayResponse;
 import com.ssl.note.service.AlipayService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/alipay")
 @Controller
 @ResponseBody
+@Slf4j
 public class AlipayController {
 
     @Autowired
@@ -43,7 +45,9 @@ public class AlipayController {
      */
     @PostMapping("/notify")
     public String notify(HttpServletRequest request) throws Exception {
-        System.out.println("支付宝回调 notify");
+        log.info("支付宝回调到 notify");
+        log.info("notify回调请求参数:{}", request.toString());
+
         String tradeStatus = request.getParameter("trade_status");
 
         if (tradeStatus.trim().equals("TRADE_SUCCESS")) {
@@ -54,16 +58,18 @@ public class AlipayController {
                 param.put(name, request.getParameter(name));
             }
 
+            // 支付宝自身验证
             if (Factory.Payment.Common().verifyNotify(param)) {
-                System.out.println("通过支付宝的验证");
+                log.info("通过支付宝自身的验证");
 
+                // 通过请求参数获得orderId
                 String out_trade_no = param.get("out_trade_no");
                 Long orderId = Long.parseLong(out_trade_no);
-
+                log.info("请求支付服务，开始！");
                 alipayService.pay(orderId);
-
+                log.info("请求支付服务，成功！");
             } else {
-                System.out.println("支付宝验证 不通过！");
+                log.info("支付宝自身的验证，不通过");
             }
         }
         return "success";
@@ -71,6 +77,7 @@ public class AlipayController {
 
     @GetMapping("/test")
     public String test() {
+        log.info("访问到test成功了！");
         return "访问到test成功了！";
     }
 }
