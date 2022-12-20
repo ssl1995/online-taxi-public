@@ -73,4 +73,12 @@ public class OrderInfoController {
     public ResponseResult<String> pay(@RequestBody OrderRequest orderRequest){
         return orderInfoService.pay(orderRequest);
     }
+
+    /**
+     * 取消订单
+     */
+    @PostMapping("/cancel")
+    public ResponseResult<String> cancel(String orderId,String identity){
+        return orderInfoService.cancel(orderId,identity);
+    }
 }
