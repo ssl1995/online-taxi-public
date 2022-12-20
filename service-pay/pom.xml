@@ -11,7 +11,7 @@
     <groupId>com.ssl.note</groupId>
     <artifactId>service-pay</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>test-alipay</name>
+    <name>service-pay</name>
     <description>test-alipay</description>
 
     <properties>
