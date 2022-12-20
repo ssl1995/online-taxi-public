@@ -38,6 +38,9 @@ public class AlipayController {
         return response.getBody();
     }
 
+    /**
+     * 支付成功后，支付宝回调地址
+     */
     @PostMapping("/notify")
     public String notify(HttpServletRequest request) throws Exception {
         System.out.println("支付宝回调 notify");
@@ -64,5 +67,10 @@ public class AlipayController {
             }
         }
         return "success";
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "访问到test成功了！";
     }
 }
