@@ -105,10 +105,20 @@ public class OrderInfoService {
         for (int i = 1; i <= 6; i++) {
             int isSuccess = dispatchRealTimeOrder(orderInfo);
 
+            // 分配司机成功
             if (Objects.equals(isSuccess, CommonStatusEnum.SUCCESS.getCode())) {
                 break;
             }
 
+            // 循环来到最后一次没有找到司机，订单无效
+            if (i == 6) {
+                orderInfo.setOrderStatus(OrderConstants.ORDER_INVALID);
+                orderInfoMapper.updateById(orderInfo);
+                log.info("订单id={},无效！", orderInfo.getId());
+                break;
+            }
+
+            // 下次寻找司机前，等待20s
             try {
                 Thread.sleep(20 * 1000);
             } catch (Exception e) {
@@ -496,7 +506,7 @@ public class OrderInfoService {
                     break;
                 // 司机去接乘客
                 case OrderConstants.DRIVER_TO_PICK_UP_PASSENGER:
-                // 司机到达乘客起点
+                    // 司机到达乘客起点
                 case OrderConstants.DRIVER_ARRIVED_DEPARTURE:
                     cancelTypeCode = OrderConstants.CANCEL_PASSENGER_ILLEGAL;
                     break;
