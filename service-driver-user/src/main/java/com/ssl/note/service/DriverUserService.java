@@ -111,6 +111,18 @@ public class DriverUserService {
         return ResponseResult.success(data);
     }
 
+    public ResponseResult<DriverCarBindingRelationship> getDriverCarBindingRelationship(String driverPhone) {
+        DriverUser driverUser = new LambdaQueryChainWrapper<>(driverUserMapper)
+                .eq(DriverUser::getDriverPhone, driverPhone).one();
+
+        DriverCarBindingRelationship bindingRelationship = new LambdaQueryChainWrapper<>(driverCarBindingRelationshipMapper)
+                .eq(DriverCarBindingRelationship::getDriverId, driverUser.getId())
+                // 出车的状态
+                .eq(DriverCarBindingRelationship::getBindState, DriverCarConstants.DRIVER_WORK_STATUS_START).one();
+
+        return ResponseResult.success(bindingRelationship);
+    }
+
     private Car getCarById(Long carId) {
         return new LambdaQueryChainWrapper<>(carMapper)
                 .eq(Car::getId, carId)

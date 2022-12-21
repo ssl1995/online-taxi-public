@@ -1,6 +1,7 @@
 package com.ssl.note.controller;
 
 import com.ssl.note.constant.DriverCarConstants;
+import com.ssl.note.dto.DriverCarBindingRelationship;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.DriverUserExistsResponse;
@@ -56,5 +57,9 @@ public class DriverUserController {
         return driverUserService.getAvailableDriverByCarId(carId);
     }
 
+    @GetMapping("/driver-car-binding-relationship")
+    public ResponseResult<DriverCarBindingRelationship> getDriverCarBindingRelationship(@RequestParam("driverPhone") String driverPhone) {
+        return driverUserService.getDriverCarBindingRelationship(driverPhone);
+    }
 
 }

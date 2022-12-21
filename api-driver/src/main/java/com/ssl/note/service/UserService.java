@@ -1,5 +1,6 @@
 package com.ssl.note.service;
 
+import com.ssl.note.dto.DriverCarBindingRelationship;
 import com.ssl.note.dto.DriverUser;
 import com.ssl.note.dto.DriverUserWorkStatus;
 import com.ssl.note.dto.ResponseResult;
@@ -29,5 +30,9 @@ public class UserService {
 
     public ResponseResult<String> changeWorkStatus(DriverUserWorkStatus driverUserWorkStatus) {
         return driverUserClient.changeWorkStatus(driverUserWorkStatus);
+    }
+
+    public ResponseResult<DriverCarBindingRelationship> getDriverCarBindingRelationship(String driverPhone) {
+        return driverUserClient.getDriverCarBindingRelationship(driverPhone);
     }
 }
