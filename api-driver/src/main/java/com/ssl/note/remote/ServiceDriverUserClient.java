@@ -2,6 +2,7 @@ package com.ssl.note.remote;
 
 import com.ssl.note.dto.Car;
 import com.ssl.note.dto.DriverUser;
+import com.ssl.note.dto.DriverUserWorkStatus;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.response.DriverUserExistsResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -26,4 +27,7 @@ public interface ServiceDriverUserClient {
 
     @GetMapping("/car")
     ResponseResult<Car> getCarById(@RequestParam("carId") Long carId);
+
+    @PostMapping("/driver-user-word-status")
+    ResponseResult<String> changeWorkStatus(@RequestBody DriverUserWorkStatus driverUserWorkStatus);
 }
