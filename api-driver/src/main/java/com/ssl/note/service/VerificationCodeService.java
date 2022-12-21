@@ -66,7 +66,7 @@ public class VerificationCodeService {
         String value = numberCode + "";
         stringRedisTemplate.opsForValue().set(key, value, 2, TimeUnit.MINUTES);
 
-        return ResponseResult.success("");
+        return ResponseResult.success(String.valueOf(numberCode));
     }
 
     public ResponseResult<TokenResponse> checkCode(String driverPhone, String verificationCode) {

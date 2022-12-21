@@ -48,20 +48,33 @@ public class JwtUtils {
 //        calendar.add(Calendar.DATE, 1);
         Date curDate = calendar.getTime();
 
+        /**
+         * JWT
+         * 1.标头：标识加密算法
+         * 2.负载信息：需要加密进去的东西
+         * 3.签名：对前2+颜值进行加密，防止篡改
+         */
+
+        // JWT需要封装的参数
         HashMap<String, String> map = new HashMap<>();
+        // 用户手机号
         map.put(JWT_KEY_PHONE, passengerPhone);
+        // 用户身份标识
         map.put(JWT_KEY_IDENTITY, identity);
+        // token类型:是refreshToken还是accessToken
         map.put(JWT_TOKEN_TYPE, tokenType);
-        // 防止Token一样，使用当前时间进行加密
+        // 防止重复:防止Token一样，使用当前时间进行加密
         map.put(JWT_TOKEN_TIME, curDate.toString());
 
-        // 导入依赖，使用JWT构造器
+        // JWT构造器:导入auth0依赖
         JWTCreator.Builder builder = JWT.create();
-        // 传入map,设置Jwt参数
+        // 构造器传入需要封装的参数
         map.forEach(builder::withClaim);
-        // 设置过期时间为1天，后续使用Redis存储过期时间
+        // 构造器设置过期时间为1天，后续采用Redis存储过期时间
 //        builder.withExpiresAt(date);
-        // 使用HMAC256+盐值，加密生成Token
+        // 构造器使用HMAC256+盐值加密，生成Token
+        // todo: 点进去学习有哪些加密算法
+        // HS256:对称加密 RS256和ES256:私钥加密、公钥解密
         return builder.sign(Algorithm.HMAC256(SIGN));
     }
 
@@ -69,10 +82,12 @@ public class JwtUtils {
      * 解密Token
      */
     public static TokenResult parseToken(String token) {
-        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SIGN))
-                .build().verify(token);
+        // 1.解析Token:使用什么加密方式，就使用什么解密
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SIGN)).build().verify(token);
+        // 2.解密所需要的手机号和身份标识
         String phone = decodedJWT.getClaim(JWT_KEY_PHONE).asString();
         String identity = decodedJWT.getClaim(JWT_KEY_IDENTITY).asString();
+
         return TokenResult.builder().phone(phone).identity(identity).build();
     }
 
