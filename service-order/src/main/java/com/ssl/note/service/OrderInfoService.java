@@ -303,7 +303,7 @@ public class OrderInfoService {
     private boolean isPriceRuleExists(String fareType) {
         int index = fareType.indexOf("$");
         String cityCode = fareType.substring(0, index);
-        String vehicleType = fareType.substring(index);
+        String vehicleType = fareType.substring(index + 1);
 
         PriceRule priceRule = PriceRule.builder().cityCode(cityCode).vehicleType(vehicleType).build();
         ResponseResult<Boolean> isExists = servicePriceClient.isExists(priceRule);
@@ -333,7 +333,7 @@ public class OrderInfoService {
         return Boolean.FALSE;
     }
 
-    private int isPassengerOrderGoingOn(Long passengerId) {
+    private int isPassengerOrderGoingOn(String passengerId) {
         // 判断有正在进行的订单不允许下单
         QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("passenger_id", passengerId);
@@ -375,7 +375,7 @@ public class OrderInfoService {
     }
 
     public ResponseResult<String> toPuckUpPassenger(OrderRequest orderRequest) {
-        Long orderId = orderRequest.getOrderId();
+        String orderId = orderRequest.getOrderId();
         // 接乘客时间不用传，后台自己生成
 //        LocalDateTime toPickUpPassengerTime = orderRequest.getToPickUpPassengerTime();
         String toPickUpPassengerLongitude = orderRequest.getToPickUpPassengerLongitude();
@@ -397,7 +397,7 @@ public class OrderInfoService {
     }
 
     public ResponseResult<String> arrivedDeparture(OrderRequest orderRequest) {
-        Long orderId = orderRequest.getOrderId();
+        String orderId = orderRequest.getOrderId();
         OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
                 .eq(OrderInfo::getId, orderId).one();
 
@@ -410,7 +410,7 @@ public class OrderInfoService {
     }
 
     public ResponseResult<String> puckUpPassenger(OrderRequest orderRequest) {
-        Long orderId = orderRequest.getOrderId();
+        String orderId = orderRequest.getOrderId();
         OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
                 .eq(OrderInfo::getId, orderId).one();
 
@@ -424,7 +424,7 @@ public class OrderInfoService {
     }
 
     public ResponseResult<String> passengerGetOff(OrderRequest orderRequest) {
-        Long orderId = orderRequest.getOrderId();
+        String orderId = orderRequest.getOrderId();
         OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
                 .eq(OrderInfo::getId, orderId).one();
 
@@ -467,7 +467,7 @@ public class OrderInfoService {
     }
 
     public ResponseResult<String> pay(OrderRequest orderRequest) {
-        Long orderId = orderRequest.getOrderId();
+        String orderId = orderRequest.getOrderId();
         OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper)
                 .eq(OrderInfo::getId, orderId).one();
         orderInfo.setOrderStatus(OrderConstants.SUCCESS_PAY);
@@ -549,6 +549,15 @@ public class OrderInfoService {
         orderInfo.setCancelTime(cancelTime);
         orderInfo.setCancelOperator(Integer.parseInt(identity));
         orderInfo.setOrderStatus(OrderConstants.ORDER_CANCEL);
+
+        orderInfoMapper.updateById(orderInfo);
+        return ResponseResult.success();
+    }
+
+    public ResponseResult<String> pushPayInfo(OrderRequest orderRequest) {
+        String orderId = orderRequest.getOrderId();
+        OrderInfo orderInfo = new LambdaQueryChainWrapper<>(orderInfoMapper).eq(OrderInfo::getId, orderId).one();
+        orderInfo.setOrderStatus(OrderConstants.TO_START_PAY);
 
         orderInfoMapper.updateById(orderInfo);
         return ResponseResult.success();

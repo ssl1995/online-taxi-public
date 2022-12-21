@@ -23,6 +23,9 @@ public class OrderController {
     private ApiOrderService apiOrderService;
 
 
+    /**
+     * 司机去接乘客
+     */
     @PostMapping("/to-puck-up-passenger")
     public ResponseResult<String> toPuckUpPassenger(@RequestBody OrderRequest request) {
         return apiOrderService.toPuckUpPassenger(request);

@@ -67,6 +67,14 @@ public class OrderInfoController {
     }
 
     /**
+     * 修改支付状态为发起收款
+     */
+    @PostMapping("/push-pay-info")
+    public ResponseResult<String> pushPayInfo(@RequestBody OrderRequest orderRequest) {
+        return orderInfoService.pushPayInfo(orderRequest);
+    }
+
+    /**
      * 支付成功
      */
     @PostMapping("/pay")
@@ -78,7 +86,7 @@ public class OrderInfoController {
      * 取消订单
      */
     @PostMapping("/cancel")
-    ResponseResult<String> cancel(@RequestParam("orderId") String orderId,
+    public ResponseResult<String> cancel(@RequestParam("orderId") String orderId,
                                   @RequestParam("identity") String identity) {
         return orderInfoService.cancel(orderId, identity);
     }

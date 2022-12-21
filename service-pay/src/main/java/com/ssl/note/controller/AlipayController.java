@@ -65,7 +65,7 @@ public class AlipayController {
 
                 // 通过请求参数获得orderId
                 String out_trade_no = param.get("out_trade_no");
-                Long orderId = Long.parseLong(out_trade_no);
+                String orderId = String.valueOf(out_trade_no);
                 log.info("请求支付服务，开始！");
                 alipayService.pay(orderId);
                 log.info("请求支付服务，成功！");

@@ -39,4 +39,11 @@ public interface ServiceOrderClient {
      */
     @PostMapping("/order/cancel")
     ResponseResult<String> cancel(@RequestParam("orderId") String orderId, @RequestParam("identity") String identity);
+
+    /**
+     * 修改支付状态为发起收款
+     */
+    @PostMapping("/order/push-pay-info")
+    ResponseResult<String> pushPayInfo(@RequestBody OrderRequest orderRequest);
+
 }

@@ -12,7 +12,7 @@ public class AlipayService {
     @Resource
     private ServiceOrderClient serviceOrderClient;
 
-    public void pay(Long orderId) {
+    public void pay(String orderId) {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderId(orderId);
         serviceOrderClient.pay(orderRequest);

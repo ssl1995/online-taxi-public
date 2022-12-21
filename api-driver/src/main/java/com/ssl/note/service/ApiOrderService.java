@@ -51,4 +51,8 @@ public class ApiOrderService {
     public ResponseResult<String> cancel(String orderId, String identity) {
         return serviceOrderClient.cancel(orderId, identity);
     }
+
+    public ResponseResult<String> pushPayInfo(OrderRequest orderRequest) {
+        return serviceOrderClient.pushPayInfo(orderRequest);
+    }
 }

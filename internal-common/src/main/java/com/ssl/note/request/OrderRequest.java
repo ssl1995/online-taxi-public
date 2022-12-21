@@ -16,10 +16,10 @@ public class OrderRequest {
     /**
      * 订单ID
      */
-    private Long orderId;
+    private String orderId;
 
     // 乘客ID
-    private Long passengerId;
+    private String passengerId;
 
     // 乘客手机号
     private String passengerPhone;
