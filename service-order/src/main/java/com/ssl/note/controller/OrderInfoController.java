@@ -45,7 +45,7 @@ public class OrderInfoController {
      * 到达乘客上车点
      */
     @PostMapping("/arrived-departure")
-    public ResponseResult<String> arrivedDeparture(@RequestBody OrderRequest orderRequest){
+    public ResponseResult<String> arrivedDeparture(@RequestBody OrderRequest orderRequest) {
         return orderInfoService.arrivedDeparture(orderRequest);
     }
 
@@ -62,7 +62,7 @@ public class OrderInfoController {
      * 乘客到达目的地，下车，行程终止
      */
     @PostMapping("/passenger-getoff")
-    public ResponseResult<String> passengerGetOff(@RequestBody OrderRequest orderRequest){
+    public ResponseResult<String> passengerGetOff(@RequestBody OrderRequest orderRequest) {
         return orderInfoService.passengerGetOff(orderRequest);
     }
 
@@ -70,7 +70,7 @@ public class OrderInfoController {
      * 支付成功
      */
     @PostMapping("/pay")
-    public ResponseResult<String> pay(@RequestBody OrderRequest orderRequest){
+    public ResponseResult<String> pay(@RequestBody OrderRequest orderRequest) {
         return orderInfoService.pay(orderRequest);
     }
 
@@ -78,7 +78,8 @@ public class OrderInfoController {
      * 取消订单
      */
     @PostMapping("/cancel")
-    public ResponseResult<String> cancel(String orderId,String identity){
-        return orderInfoService.cancel(orderId,identity);
+    ResponseResult<String> cancel(@RequestParam("orderId") String orderId,
+                                  @RequestParam("identity") String identity) {
+        return orderInfoService.cancel(orderId, identity);
     }
 }

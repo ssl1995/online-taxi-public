@@ -5,6 +5,7 @@ import com.ssl.note.request.OrderRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "service-order", contextId = "api-driver-service-map-ServiceOrderClient")
 public interface ServiceOrderClient {
@@ -37,5 +38,5 @@ public interface ServiceOrderClient {
      * 取消订单
      */
     @PostMapping("/order/cancel")
-    ResponseResult<String> cancel(String orderId, String identity);
+    ResponseResult<String> cancel(@RequestParam("orderId") String orderId, @RequestParam("identity") String identity);
 }

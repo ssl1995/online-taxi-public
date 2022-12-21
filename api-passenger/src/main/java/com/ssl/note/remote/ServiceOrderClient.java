@@ -3,10 +3,7 @@ package com.ssl.note.remote;
 import com.ssl.note.dto.ResponseResult;
 import com.ssl.note.request.OrderRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: SongShengLin
@@ -25,6 +22,6 @@ public interface ServiceOrderClient {
      * 取消订单
      */
     @PostMapping("/order/cancel")
-    ResponseResult<String> cancel(String orderId, String identity);
+    ResponseResult<String> cancel(@RequestParam("orderId") String orderId, @RequestParam("identity") String identity);
 
 }
