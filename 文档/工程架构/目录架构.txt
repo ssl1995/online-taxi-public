@@ -1,0 +1,17 @@
+online-taxi-public
+|-- api-boss 服务端接口
+|-- api-driver  司机接口
+|-- api-passenger 乘客接口
+
+|-- internal-common 通用模块
+
+|-- service-driver-user  司机服务
+|-- service-map  地图服务
+|-- service-order  订单服务
+|-- service-passenger-user  乘客服务
+|-- service-pay 支付服务
+|-- service-sse-push 消息服务
+|-- service-verification-code  验证码服务
+
+
+
